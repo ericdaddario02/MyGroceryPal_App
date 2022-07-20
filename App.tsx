@@ -1,12 +1,12 @@
-import React, {  } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { ResponsiveText as Text } from './src/components/ResponsiveText';
 import { appFonts } from './src/constants/fonts';
 
-// === Types ===
-import { StackParamList } from './src/types/types';
-// ===
+import type { StackParamList } from './src/types/types';
 
 // === Screens ===
 import MyListsScreen from './src/screens/MyListsScreen';
@@ -40,7 +40,7 @@ function App() {
 						// ),
 						headerTitle: () => (
 							<View style={{ justifyContent: 'center', height: 75 }}>
-								<Text style={{ fontFamily: appFonts.medium, fontSize: 32, color: 'black' }}>My Lists</Text>
+								<Text style={{ fontFamily: appFonts.semibold, fontSize: 32, color: 'black' }}>My Lists</Text>
 							</View>
 						),
 					}}
@@ -51,9 +51,5 @@ function App() {
 	);
 }
 
-
-const styles = StyleSheet.create({
-
-});
 
 export default App;

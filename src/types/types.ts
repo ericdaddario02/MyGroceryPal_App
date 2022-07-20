@@ -1,20 +1,21 @@
 // === Types that are also used on the backend / Api Types ===
 
 export interface List {
-	listId: string,
+	id: number,
 	name: string,
 	tags: ListTag[],
-	items: ListItem[]
+	items: ListItem[],
+	isOwner: boolean
 };
 
 export interface ListTag {
-	listTagId: string,
+	id: number,
 	name: string,
 	colour: string
 };
 
 export interface ListItem {
-	listItemId: string,
+	id: number,
 	name: string,
 	additionalNotes: string,
 	price: string,
