@@ -47,13 +47,18 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 					<View style={styles.listCard}>
 						<Text style={styles.listCardName}>{list.name}</Text>
 						<Menu 
-							button={<MenuButton containerStyle={styles.listCardMenuButton}/>}
-							buttonContainerStyle={styles.listCardMenuButton}
+							button={<MenuButton />}
+							buttonContainerStyle={styles.listCardMenuButtonContainer}
 						>
 							<MenuItem
 								text='Edit List'
 								onPress={() => console.log('edit list')}
 							/>
+                            {/* <MenuDivider /> */}
+                            <MenuItem
+                                text='Delete List'
+                                onPress={() => console.log('delete list')}
+                            />
 						</Menu>
 					</View>
 				</TouchableOpacity>
@@ -66,8 +71,7 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 const styles = StyleSheet.create({
 	mainContainer: {
 		flex: 1,
-		paddingVertical: vs(15),
-		paddingBottom: 500,
+		paddingVertical: vs(15)
 	},
 	mainContentContainer: {
 		paddingBottom: vs(15)
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
 		fontFamily: appFonts.medium,
 		marginLeft: hs(13)
 	},
-	listCardMenuButton: {
+	listCardMenuButtonContainer: {
 		position: 'absolute',
 		right: hs(3),
 		top: vs(2)

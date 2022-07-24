@@ -10,6 +10,7 @@ import type { StackParamList } from './src/types/types';
 
 // === Screens ===
 import MyListsScreen from './src/screens/MyListsScreen';
+import { vs } from 'react-native-size-matters';
 // ===
 
 
@@ -39,7 +40,7 @@ function App() {
 						// 	</View>
 						// ),
 						headerTitle: () => (
-							<View style={{ justifyContent: 'center', height: 75 }}>
+							<View style={{ justifyContent: 'center', height: vs(65) }}>
 								<Text style={{ fontFamily: appFonts.semibold, fontSize: 32, color: 'black' }}>My Lists</Text>
 							</View>
 						),

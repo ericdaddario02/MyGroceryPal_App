@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, type RefObject } from "react";
-import { View, StyleSheet, Dimensions, TouchableOpacity, type StyleProp, type ViewStyle, type GestureResponderEvent, type LayoutChangeEvent } from "react-native";
+import React, { useState, useRef, type RefObject } from "react";
+import { View, StyleSheet, TouchableOpacity, type StyleProp, type ViewStyle, type GestureResponderEvent, type LayoutChangeEvent } from "react-native";
 import { s as hs, vs } from 'react-native-size-matters';
 import Modal from 'react-native-modal';
 
@@ -10,7 +10,7 @@ import { appColours } from '../constants/colours';
 interface MenuProps {
 	button: React.ReactElement,
 	buttonContainerStyle?: StyleProp<ViewStyle>,
-	children: React.ReactElement
+	children: React.ReactElement | React.ReactElement[]
 }
 
 interface MenuButtonProps {
@@ -56,24 +56,29 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
 		}
 	}
 
-	useEffect(() => {
-		menuButtonRef?.current?.measureInWindow((x: number, y: number, width: number, height: number) => {
+	function calculateMenuPositionAndShowMenu() {
+        menuButtonRef?.current?.measureInWindow((x: number, y: number, width: number, height: number) => {
 			setMenuButtonPosition({top: y, left: x});
+            setMenuVisible(true);
 		});
-	}, [menuVisible]);
+    }
 
 	function menuChildrenOnLayoutHandler(event: LayoutChangeEvent) {
 		setMenuChildrenContainerWidth(event.nativeEvent.layout.width);
 	}
 
 	function toggleMenuVisible() {
-		setMenuVisible(!menuVisible);
+        if (!menuVisible) { // if we are going to set menu visible to true
+            calculateMenuPositionAndShowMenu();
+        } else {
+            setMenuVisible(false);
+        }
 	}
 
 	return (
 		<>
 		<TouchableOpacity onPress={toggleMenuVisible} style={buttonContainerStyle}>
-			<View ref={menuButtonRef}>
+			<View ref={menuButtonRef} collapsable={false}>
 				{button}
 			</View>
 		</TouchableOpacity>
@@ -86,9 +91,24 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
 			animationOutTiming={100}
 			backdropOpacity={0}
 			onBackdropPress={toggleMenuVisible}
+            style={{ margin: 0 }} // margin to 0 to more accurately position the modal popup at an 'absolute' window position
 		>
-			<View onLayout={menuChildrenOnLayoutHandler} style={{ position: 'absolute', top: menuButtonPosition.top - vs(17), left: menuButtonPosition.left - menuChildrenContainerWidth - hs(18) }}>
-				{children}
+			<View 
+                onLayout={menuChildrenOnLayoutHandler} 
+                style={{
+                    position: 'absolute',
+                    top: menuButtonPosition.top,
+                    left: menuButtonPosition.left - menuChildrenContainerWidth,
+                    backgroundColor: 'white',
+                    borderRadius: 5
+                }}
+            >
+				{/* pass the closeModal to children prop  */}
+                {Array.isArray(children)
+                ? children.map((childrenItem, index) => {
+                    return React.cloneElement(childrenItem, {key: childrenItem.props.title ?? index, closeMenu: toggleMenuVisible});
+                  })
+                : React.cloneElement(children, {closeMenu: toggleMenuVisible})}
 			</View>
 		</Modal>
 		</>
@@ -98,18 +118,18 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
 
 export function MenuItem({ text, onPress, closeMenu }: MenuItemProps) {
 	const styles = StyleSheet.create({
-		body: {
-			padding: 10,
+		container: {
+			padding: hs(8)
 		},
 	});
 
-	const handleOnPress = () => {
+	function handleOnPress() {
 		closeMenu!();
 		onPress();
 	};
 
 	return (
-		<TouchableOpacity onPress={handleOnPress} style={styles.body}>
+		<TouchableOpacity onPress={handleOnPress} activeOpacity={0.6} style={styles.container}>
 			<Text numberOfLines={1}>{text}</Text>
 		</TouchableOpacity>
 	);
