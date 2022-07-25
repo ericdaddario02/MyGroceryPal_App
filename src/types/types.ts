@@ -5,7 +5,8 @@ export interface List {
 	name: string,
 	tags: ListTag[],
 	items: ListItem[],
-	isOwner: boolean
+	isOwner: boolean,
+    inviteCode: string
 };
 
 export interface ListTag {

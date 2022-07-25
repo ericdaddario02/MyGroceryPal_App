@@ -1,0 +1,1 @@
+export const sharedListIcon = require('../assets/images/sharedListIcon.png');

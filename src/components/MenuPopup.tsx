@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 
 import { ResponsiveText as Text } from './ResponsiveText';
 import { appColours } from '../constants/colours';
+import { appFonts } from '../constants/fonts';
 
 
 interface MenuProps {
@@ -121,6 +122,11 @@ export function MenuItem({ text, onPress, closeMenu }: MenuItemProps) {
 		container: {
 			padding: hs(8)
 		},
+        itemText: {
+            fontFamily: appFonts.regular,
+            fontSize: 13,
+            color: 'black'
+        }
 	});
 
 	function handleOnPress() {
@@ -130,7 +136,7 @@ export function MenuItem({ text, onPress, closeMenu }: MenuItemProps) {
 
 	return (
 		<TouchableOpacity onPress={handleOnPress} activeOpacity={0.6} style={styles.container}>
-			<Text numberOfLines={1}>{text}</Text>
+			<Text numberOfLines={1} style={styles.itemText}>{text}</Text>
 		</TouchableOpacity>
 	);
 };
@@ -139,7 +145,7 @@ export function MenuItem({ text, onPress, closeMenu }: MenuItemProps) {
 export function MenuButton({ containerStyle, dotStyle }: MenuButtonProps) {
 	const styles = StyleSheet.create({
 		container: {
-			height: vs(26),
+			height: vs(24),
 			width: hs(10),
 			paddingVertical: vs(3),
 			justifyContent: 'space-between',

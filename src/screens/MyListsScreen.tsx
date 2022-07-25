@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { s as hs, vs, ms as mhs, mvs } from 'react-native-size-matters';
 
 import { ResponsiveText as Text } from '../components/ResponsiveText';
 import { Menu, MenuItem, MenuButton } from '../components/MenuPopup';
 import { appFonts } from '../constants/fonts';
 import { appColours } from "../constants/colours";
+import { sharedListIcon } from '../constants/images';
 
 import type { MyListsScreenProps, List } from '../types/types';
 
 
 let testData: List[] = [
-	{id: 1, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 2, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 11, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 12, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 21, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 22, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 31, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 32, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 41, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 42, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 51, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 52, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 61, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 62, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 71, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 72, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
-	{id: 81, name: "Grocery List", items: [], tags: [], isOwner: true},
-	{id: 82, name: "Shared Grocery List", items: [], tags: [], isOwner: false},
+	{id: 1, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 2, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 11, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 12, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 21, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 22, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 31, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 32, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 41, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 42, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 51, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 52, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 61, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 62, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 71, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 72, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 81, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
+	{id: 82, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
 ];
 
 
@@ -45,21 +46,26 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 			{listsArr.map((list, index) =>
 				<TouchableOpacity key={list.id} style={styles.listCardTouchable}>
 					<View style={styles.listCard}>
-						<Text style={styles.listCardName}>{list.name}</Text>
-						<Menu 
-							button={<MenuButton />}
-							buttonContainerStyle={styles.listCardMenuButtonContainer}
-						>
-							<MenuItem
-								text='Edit List'
-								onPress={() => console.log('edit list')}
-							/>
+                        <Menu 
+                            button={<MenuButton />}
+                            buttonContainerStyle={styles.listCardMenuButtonContainer}
+                        >
+                            <MenuItem
+                                text='Edit List'
+                                onPress={() => console.log('edit list')}
+                            />
                             {/* <MenuDivider /> */}
                             <MenuItem
                                 text='Delete List'
                                 onPress={() => console.log('delete list')}
                             />
-						</Menu>
+                        </Menu>
+
+						<Text style={styles.listCardName}>{list.name}</Text>
+
+                        {!list.isOwner && 
+                            <Image source={sharedListIcon} style={styles.sharedListIcon} resizeMode='contain'/>
+                        }
 					</View>
 				</TouchableOpacity>
 			)}
@@ -104,7 +110,16 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		right: hs(3),
 		top: vs(2)
-	}
+	},
+    sharedListIcon: {
+        position: 'absolute',
+        right: hs(4.5),
+        bottom: vs(4),
+        tintColor: appColours.green,
+        width: hs(22),
+        height: undefined,
+        aspectRatio: 22 / 12.5
+    }
 });
 
 
