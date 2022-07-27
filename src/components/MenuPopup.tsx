@@ -4,7 +4,7 @@ import { s as hs, vs } from 'react-native-size-matters';
 import Modal from 'react-native-modal';
 
 import { ResponsiveText as Text } from './ResponsiveText';
-import { appColours } from '../constants/colours';
+import { appColours, textColours } from '../constants/colours';
 import { appFonts } from '../constants/fonts';
 
 
@@ -78,7 +78,7 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
 
 	return (
 		<>
-		<TouchableOpacity onPress={toggleMenuVisible} style={buttonContainerStyle}>
+		<TouchableOpacity onPress={toggleMenuVisible} style={buttonContainerStyle} activeOpacity={0.4}>
 			<View ref={menuButtonRef} collapsable={false}>
 				{button}
 			</View>
@@ -101,7 +101,9 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
                     top: menuButtonPosition.top,
                     left: menuButtonPosition.left - menuChildrenContainerWidth,
                     backgroundColor: 'white',
-                    borderRadius: 5
+                    borderRadius: 5,
+                    borderWidth: 1,
+                    borderColor: appColours.grey
                 }}
             >
 				{/* pass the closeModal to children prop  */}
@@ -125,7 +127,7 @@ export function MenuItem({ text, onPress, closeMenu }: MenuItemProps) {
         itemText: {
             fontFamily: appFonts.regular,
             fontSize: 13,
-            color: 'black'
+            color: textColours.grey
         }
 	});
 

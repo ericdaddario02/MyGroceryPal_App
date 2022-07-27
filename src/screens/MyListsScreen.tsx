@@ -5,8 +5,8 @@ import { s as hs, vs, ms as mhs, mvs } from 'react-native-size-matters';
 import { ResponsiveText as Text } from '../components/ResponsiveText';
 import { Menu, MenuItem, MenuButton } from '../components/MenuPopup';
 import { appFonts } from '../constants/fonts';
-import { appColours } from "../constants/colours";
-import { sharedListIcon } from '../constants/images';
+import { appColours, textColours } from "../constants/colours";
+import { sharedListIcon, plusIcon, joinIcon } from '../constants/images';
 
 import type { MyListsScreenProps, List } from '../types/types';
 
@@ -42,45 +42,68 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 
 
 	return (
-		<ScrollView style={styles.mainContainer} contentContainerStyle={styles.mainContentContainer}>
-			{listsArr.map((list, index) =>
-				<TouchableOpacity key={list.id} style={styles.listCardTouchable}>
-					<View style={styles.listCard}>
-                        <Menu 
-                            button={<MenuButton />}
-                            buttonContainerStyle={styles.listCardMenuButtonContainer}
-                        >
-                            <MenuItem
-                                text='Edit List'
-                                onPress={() => console.log('edit list')}
-                            />
-                            {/* <MenuDivider /> */}
-                            <MenuItem
-                                text='Delete List'
-                                onPress={() => console.log('delete list')}
-                            />
-                        </Menu>
+        <View style={styles.mainContainer}>
+            <ScrollView style={styles.mainScrollViewContainer} contentContainerStyle={styles.mainScrollViewContentContainer}>
+                {listsArr.map((list, index) =>
+                    <TouchableOpacity key={list.id} style={styles.listCardTouchable} activeOpacity={0.4}>
+                        <View style={styles.listCard}>
+                            <Menu 
+                                button={<MenuButton />}
+                                buttonContainerStyle={styles.listCardMenuButtonContainer}
+                            >
+                                <MenuItem
+                                    text='Edit List'
+                                    onPress={() => console.log('edit list')}
+                                />
+                                {/* <MenuDivider /> */}
+                                <MenuItem
+                                    text='Delete List'
+                                    onPress={() => console.log('delete list')}
+                                />
+                            </Menu>
 
-						<Text style={styles.listCardName}>{list.name}</Text>
+                            <Text style={styles.listCardName}>{list.name}</Text>
 
-                        {!list.isOwner && 
-                            <Image source={sharedListIcon} style={styles.sharedListIcon} resizeMode='contain'/>
-                        }
-					</View>
-				</TouchableOpacity>
-			)}
-		</ScrollView>
+                            {!list.isOwner && 
+                                <Image source={sharedListIcon} resizeMode='contain' style={styles.sharedListIcon}/>
+                            }
+                        </View>
+                    </TouchableOpacity>
+                )}
+            </ScrollView>
+
+            <View style={styles.floatingButtonsContainer}>
+                <View style={styles.floatingButton}>
+                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable}>
+                        <Image source={plusIcon} resizeMode='contain' style={styles.floatingButtonIcon}/>
+                        <Text style={styles.floatingButtonText}>Create new list</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.floatingButtonsContainerSpacer} />
+
+                <View style={styles.floatingButton}>
+                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable}>
+                        <Image source={joinIcon} resizeMode='contain' style={styles.floatingButtonIcon}/>
+                        <Text style={styles.floatingButtonText}>Join new list</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
 	);
 }
 
 
 const styles = StyleSheet.create({
-	mainContainer: {
+    mainContainer: {
+        flex: 1
+    },
+	mainScrollViewContainer: {
 		flex: 1,
 		paddingVertical: vs(15)
 	},
-	mainContentContainer: {
-		paddingBottom: vs(15)
+	mainScrollViewContentContainer: {
+		paddingBottom: vs(15) + vs(100)  // + vs(100) to offset the floating buttons container
 	},
 	listCard: {
 		flex: 1,
@@ -119,6 +142,47 @@ const styles = StyleSheet.create({
         width: hs(22),
         height: undefined,
         aspectRatio: 22 / 12.5
+    },
+    floatingButtonsContainer: {
+        position: 'absolute',
+        bottom: vs(23),
+        right: hs(15)
+    },
+    floatingButtonsContainerSpacer: {
+        height: vs(11)
+    },
+    floatingButton: {
+        borderRadius: 7,
+        borderWidth: 2,
+        borderColor: appColours.grey,
+        paddingVertical: vs(6),
+        paddingHorizontal: hs(6),
+        backgroundColor: 'white',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.27,
+        shadowRadius: 4.65,
+
+        elevation: 6,
+    },
+    floatingButtonTouchable: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    floatingButtonIcon: {
+        width: hs(14),
+        height: undefined,
+        aspectRatio: 1,
+        marginRight: hs(6),
+        tintColor: textColours.blue
+    },
+    floatingButtonText: {
+        fontFamily: appFonts.medium,
+        fontSize: 14,
+        color: textColours.blue
     }
 });
 
