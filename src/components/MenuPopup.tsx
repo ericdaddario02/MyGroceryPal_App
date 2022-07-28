@@ -1,5 +1,5 @@
 import React, { useState, useRef, type RefObject } from "react";
-import { View, StyleSheet, TouchableOpacity, type StyleProp, type ViewStyle, type GestureResponderEvent, type LayoutChangeEvent } from "react-native";
+import { View, StyleSheet, TouchableOpacity, type StyleProp, type ViewStyle, type LayoutChangeEvent } from "react-native";
 import { s as hs, vs } from 'react-native-size-matters';
 import Modal from 'react-native-modal';
 
@@ -55,7 +55,7 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
 				translateY: vs(15)
 			}
 		}
-	}
+	};
 
 	function calculateMenuPositionAndShowMenu() {
         menuButtonRef?.current?.measureInWindow((x: number, y: number, width: number, height: number) => {
