@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "startandroid": "konsole --new-tab -e $SHELL -c \"npm run start\" & npm run android"
+    "mystart": "konsole --new-tab -e $SHELL -c \"npm run start\" & npm run android"
   },
   "dependencies": {
     "@react-navigation/native": "^6.0.11",

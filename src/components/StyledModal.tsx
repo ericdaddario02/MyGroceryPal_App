@@ -7,20 +7,19 @@ import { ResponsiveText as Text } from "./ResponsiveText";
 import { appColours, textColours } from '../constants/colours';
 import { appFonts } from '../constants/fonts';
 
+import type { StyledModalButton } from '../types/types';
+
 
 interface StyledModalProps {
     title: string,
-    children: React.ReactElement,
-    visible: boolean,
+    children: React.ReactNode,
+    isVisible: boolean,
     borderColor?: string,
     rightButton?: StyledModalButton,
     leftButton?: StyledModalButton,
-    modalAnimations?: StyledModalAnimation
-}
-
-interface StyledModalButton {
-    text: 'string',
-    textColour?: 'string'
+    modalAnimations?: StyledModalAnimation,
+	closeModal: Function,
+	onClose?: Function
 }
 
 interface StyledModalAnimation {
@@ -51,13 +50,13 @@ interface StyledModalAnimation {
 }
 
 
-export function StyledModal({ title, children, visible, borderColor = appColours.grey, rightButton, leftButton, modalAnimations }: StyledModalProps) {
+export function StyledModal({ title, children, isVisible, borderColor, rightButton, leftButton, modalAnimations, closeModal, onClose }: StyledModalProps) {
     const defaultModalAnimations = {
 		in: {
 			from: {
 				opacity: 0,
-				translateY: vs(25),
-                scale: 0.5
+				translateY: vs(20),
+                scale: 0.9
 			},
 			to: {
 				opacity: 1,
@@ -73,8 +72,8 @@ export function StyledModal({ title, children, visible, borderColor = appColours
 			},
 			to: {
 				opacity: 0,
-				translateY: vs(25),
-                scale: 0.5
+				translateY: vs(20),
+                scale: 0.9
 			}
 		}
 	};
@@ -82,36 +81,46 @@ export function StyledModal({ title, children, visible, borderColor = appColours
     const styles = StyleSheet.create({
         container: {
             borderWidth: 5,
-            borderRadius: 5,
-            borderColor: borderColor
-        },
-        buttonsContainer: {
-            flexDirection: 'row',
-            width: '95%',
-            justifyContent: 'space-between'
+            borderRadius: 10,
+            borderColor: borderColor ?? appColours.grey,
+			backgroundColor: 'white',
+			width: '95%',
+			alignSelf: 'center'
         },
         titleContainer: {
             paddingVertical: vs(5),
-            paddingHorizontal: hs(5),
+            paddingHorizontal: hs(7),
+			marginBottom: vs(5),
             borderBottomWidth: 1,
-            borderBottomColor: appColours.dividerColour,
-            marginBottom: vs(5)
+            borderBottomColor: appColours.dividerColour
         },
         titleText: {
             fontSize: 22,
-            fontFamily: appFonts.medium
+            fontFamily: appFonts.medium,
+			color: 'black'
         },
         childrenContainer: {
             paddingVertical: vs(5),
-            paddingHorizontal: hs(5)
+            paddingHorizontal: hs(8)
         },
-        buttonContainer: {
-            paddingVertical: vs(2),
-            paddingHorizontal: hs(7),
+		buttonsContainer: {
+            flexDirection: 'row-reverse',
+			paddingTop: vs(5),
+			paddingBottom: vs(7),
+			paddingHorizontal: hs(7),
+            justifyContent: 'space-between'
+        },
+        button: {
             borderWidth: 2,
             borderColor: appColours.grey,
-            borderRadius: 5
+            borderRadius: 5,
+			minWidth: hs(70),
         },
+		buttonTouchable: {
+			alignItems: 'center',
+			paddingVertical: vs(3),
+            paddingHorizontal: hs(9)
+		},
         leftButtonText: {
             fontFamily: appFonts.medium,
             fontSize: 14,
@@ -123,15 +132,21 @@ export function StyledModal({ title, children, visible, borderColor = appColours
             color: rightButton?.textColour ?? textColours.blue
         }
     });
+	
 
     return (
         <Modal
-            isVisible={visible}
+            isVisible={isVisible}
             animationIn={modalAnimations?.in ?? defaultModalAnimations.in}
-            animationInTiming={250}
+            animationInTiming={150}
             animationOut={modalAnimations?.out ?? defaultModalAnimations.out}
-            animationOutTiming={250}
+            animationOutTiming={150}
             style={{ margin: 0 }} // margin to 0 to more accurately position the modal popup at an 'absolute' window position
+			onBackdropPress={() => closeModal()}
+			onBackButtonPress={() => closeModal()}
+			backdropOpacity={0.3}
+			onModalHide={() => {if (onClose) onClose()}}
+			useNativeDriver
         >
             <View style={styles.container}>
                 <View style={styles.titleContainer}>
@@ -144,15 +159,15 @@ export function StyledModal({ title, children, visible, borderColor = appColours
 
                 <View style={styles.buttonsContainer}>
                     {leftButton &&
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity activeOpacity={0.3}>
+                        <View style={styles.button}>
+                            <TouchableOpacity activeOpacity={0.3} onPress={leftButton.onPress} style={styles.buttonTouchable}>
                                 <Text style={styles.leftButtonText}>{leftButton.text}</Text>
                             </TouchableOpacity>
                         </View>
                     }
                     {rightButton &&
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity activeOpacity={0.3}>
+                        <View style={styles.button}>
+                            <TouchableOpacity activeOpacity={0.3} onPress={rightButton.onPress} style={styles.buttonTouchable}>
                                 <Text style={styles.rightButtonText}>{rightButton.text}</Text>
                             </TouchableOpacity>
                         </View>

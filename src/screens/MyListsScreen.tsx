@@ -4,11 +4,12 @@ import { s as hs, vs, ms as mhs, mvs } from 'react-native-size-matters';
 
 import { ResponsiveText as Text } from '../components/ResponsiveText';
 import { Menu, MenuItem, MenuButton } from '../components/MenuPopup';
+import { ListManagementModal } from '../components/ListManagementModal';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from "../constants/colours";
 import { sharedListIcon, plusIcon, joinIcon } from '../constants/images';
 
-import type { MyListsScreenProps, List } from '../types/types';
+import type { MyListsScreenProps, List, ValidListManagementModalType } from '../types/types';
 
 
 let testData: List[] = [
@@ -35,10 +36,23 @@ let testData: List[] = [
 
 function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 	const [ listsArr, setListsArr ] = useState<List[]>([]);
+	const [ listManagementModalType, setListManagementModalType ] = useState<ValidListManagementModalType>(null);
+	const [ listManagementModalList, setListManagementModalList ] = useState<List|null>(null);
+	const [ listManagementModalVisible, setListManagementModalVisible ] = useState<boolean>(false);
 	
 	useEffect(() => {
 		setListsArr(testData);
 	}, []);
+
+	function showListManagementModal(type: ValidListManagementModalType, list: List|null) {
+		setListManagementModalType(type);
+		setListManagementModalList(list);
+		setListManagementModalVisible(true);
+	}
+
+	function hideListManagementModal() {
+		setListManagementModalVisible(false);
+	}
 
 
 	return (
@@ -53,12 +67,12 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
                             >
                                 <MenuItem
                                     text='Edit List'
-                                    onPress={() => console.log('edit list')}
+                                    onPress={() => showListManagementModal('edit', list)}
                                 />
                                 {/* <MenuDivider /> */}
                                 <MenuItem
                                     text='Delete List'
-                                    onPress={() => console.log('delete list')}
+                                    onPress={() => showListManagementModal('delete', list)}
                                 />
                             </Menu>
 
@@ -74,7 +88,7 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 
             <View style={styles.floatingButtonsContainer}>
                 <View style={styles.floatingButton}>
-                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable}>
+                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable} onPress={() => showListManagementModal('create', null)}>
                         <Image source={plusIcon} resizeMode='contain' style={styles.floatingButtonIcon}/>
                         <Text style={styles.floatingButtonText}>Create new list</Text>
                     </TouchableOpacity>
@@ -83,12 +97,20 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
                 <View style={styles.floatingButtonsContainerSpacer} />
 
                 <View style={styles.floatingButton}>
-                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable}>
+                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable} onPress={() => showListManagementModal('join', null)}>
                         <Image source={joinIcon} resizeMode='contain' style={styles.floatingButtonIcon}/>
                         <Text style={styles.floatingButtonText}>Join new list</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+
+			<ListManagementModal
+				isVisible={listManagementModalVisible}
+				type={listManagementModalType}
+				list={listManagementModalList}
+				setListsArr={setListsArr}
+				closeModal={hideListManagementModal}
+			/>
         </View>
 	);
 }
@@ -155,8 +177,6 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         borderWidth: 2,
         borderColor: appColours.grey,
-        paddingVertical: vs(6),
-        paddingHorizontal: hs(6),
         backgroundColor: 'white',
         shadowColor: "#000",
         shadowOffset: {
@@ -170,7 +190,9 @@ const styles = StyleSheet.create({
     },
     floatingButtonTouchable: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+		paddingVertical: vs(6),
+        paddingHorizontal: hs(6),
     },
     floatingButtonIcon: {
         width: hs(14),

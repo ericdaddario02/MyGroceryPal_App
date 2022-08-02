@@ -1,3 +1,6 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { GestureResponderEvent } from 'react-native';
+
 // === Types that are also used on the backend / Api Types ===
 
 export interface List {
@@ -27,8 +30,6 @@ export interface ListItem {
 
 // === React Navigation Types ===
 
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-
 export type StackParamList =  {
 	MyLists: undefined;
 	List: {listName: string, listTags: ListTag[], listItems: ListItem[]}
@@ -36,5 +37,17 @@ export type StackParamList =  {
 
 export type MyListsScreenProps = NativeStackScreenProps<StackParamList, 'MyLists'>;
 export type ListScreenProps = NativeStackScreenProps<StackParamList, 'List'>;
+
+// ===
+
+// === Shared Types Between Components/Screens ===
+
+export interface StyledModalButton {
+    text: string,
+    textColour?: string,
+	onPress: ((event: GestureResponderEvent) => void)
+}
+
+export type ValidListManagementModalType = 'create' | 'join' | 'edit' | 'invite' | 'delete' | null;
 
 // ===
