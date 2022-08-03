@@ -11,6 +11,7 @@
     "mystart": "konsole --new-tab -e $SHELL -c \"npm run start\" & npm run android"
   },
   "dependencies": {
+    "@react-native-clipboard/clipboard": "^1.10.0",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "react": "18.0.0",

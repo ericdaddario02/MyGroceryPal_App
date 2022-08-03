@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import Modal from 'react-native-modal';
 import { s as hs, vs } from "react-native-size-matters";
@@ -78,7 +78,7 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
 		}
 	};
 
-    const styles = StyleSheet.create({
+    const styles = useMemo(() => StyleSheet.create({
         container: {
             borderWidth: 5,
             borderRadius: 10,
@@ -131,7 +131,7 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
             fontSize: 14,
             color: rightButton?.textColour ?? textColours.blue
         }
-    });
+    }), [borderColor, leftButton, rightButton]);
 	
 
     return (

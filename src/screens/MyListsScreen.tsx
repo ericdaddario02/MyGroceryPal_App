@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-nat
 import { s as hs, vs, ms as mhs, mvs } from 'react-native-size-matters';
 
 import { ResponsiveText as Text } from '../components/ResponsiveText';
-import { Menu, MenuItem, MenuButton } from '../components/MenuPopup';
+import { Menu, MenuItem, MenuButton, MenuDivider } from '../components/MenuPopup';
 import { ListManagementModal } from '../components/ListManagementModal';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from "../constants/colours";
@@ -69,7 +69,11 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
                                     text='Edit List'
                                     onPress={() => showListManagementModal('edit', list)}
                                 />
-                                {/* <MenuDivider /> */}
+								<MenuItem
+									text='Invite Others'
+									onPress={() => showListManagementModal('invite', list)}
+								/>
+                                <MenuDivider />
                                 <MenuItem
                                     text='Delete List'
                                     onPress={() => showListManagementModal('delete', list)}

@@ -120,54 +120,71 @@ export function Menu({ button, buttonContainerStyle, children }: MenuProps) {
 
 
 export function MenuItem({ text, onPress, closeMenu }: MenuItemProps) {
-	const styles = StyleSheet.create({
-		container: {
-			padding: hs(8)
-		},
-        itemText: {
-            fontFamily: appFonts.regular,
-            fontSize: 13,
-            color: textColours.grey
-        }
-	});
-
 	function handleOnPress() {
 		closeMenu!();
 		onPress();
 	};
 
 	return (
-		<TouchableOpacity onPress={handleOnPress} activeOpacity={0.6} style={styles.container}>
-			<Text numberOfLines={1} style={styles.itemText}>{text}</Text>
+		<TouchableOpacity onPress={handleOnPress} activeOpacity={0.6} style={menuItemStyles.container}>
+			<Text numberOfLines={1} style={menuItemStyles.itemText}>{text}</Text>
 		</TouchableOpacity>
 	);
 };
 
 
 export function MenuButton({ containerStyle, dotStyle }: MenuButtonProps) {
-	const styles = StyleSheet.create({
-		container: {
-			height: vs(24),
-			width: hs(10),
-			paddingVertical: vs(3),
-			justifyContent: 'space-between',
-			alignItems: 'center'
-		},
-		dot: {
-			width: hs(5),
-			height: hs(5),
-			backgroundColor: 'white',
-			borderRadius: 5,
-			borderWidth: 1,
-			borderColor: appColours.green
-		}
-	});
-
 	return (
-		<View style={[styles.container, containerStyle]}>
-			<View style={[styles.dot, dotStyle]}/>
-			<View style={[styles.dot, dotStyle]}/>
-			<View style={[styles.dot, dotStyle]}/>
+		<View style={[menuButtonStyles.container, containerStyle]}>
+			<View style={[menuButtonStyles.dot, dotStyle]}/>
+			<View style={[menuButtonStyles.dot, dotStyle]}/>
+			<View style={[menuButtonStyles.dot, dotStyle]}/>
 		</View>	
 	);
 }
+
+
+export function MenuDivider() {
+	return (
+		<View style={menuDividerStyles.divider} />
+	)
+}
+
+
+const menuItemStyles = StyleSheet.create({
+	container: {
+		paddingHorizontal: hs(7),
+		paddingVertical: vs(6)
+	},
+	itemText: {
+		fontFamily: appFonts.regular,
+		fontSize: 12.5,
+		color: textColours.grey
+	}
+});
+
+const menuButtonStyles = StyleSheet.create({
+	container: {
+		height: vs(24),
+		width: hs(10),
+		paddingVertical: vs(3),
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	dot: {
+		width: hs(5),
+		height: hs(5),
+		backgroundColor: 'white',
+		borderRadius: 5,
+		borderWidth: 1,
+		borderColor: appColours.green
+	}
+});
+
+const menuDividerStyles = StyleSheet.create({
+	divider: {
+		borderBottomWidth: 1,
+		borderBottomColor: appColours.dividerColour,
+		marginVertical: vs(1)
+	}
+});
