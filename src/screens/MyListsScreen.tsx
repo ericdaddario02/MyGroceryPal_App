@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
-import { s as hs, vs, ms as mhs, mvs } from 'react-native-size-matters';
+import { s as hs, vs } from 'react-native-size-matters';
 
 import { ResponsiveText as Text } from '../components/ResponsiveText';
 import { Menu, MenuItem, MenuButton, MenuDivider } from '../components/MenuPopup';
@@ -9,12 +9,12 @@ import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from "../constants/colours";
 import { sharedListIcon, plusIcon, joinIcon } from '../constants/images';
 
-import type { MyListsScreenProps, List, ValidListManagementModalType } from '../types/types';
+import type { MyListsScreenProps, List, ListTag, ListItem, ValidListManagementModalType } from '../types/types';
 
 
 let testData: List[] = [
 	{id: 1, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 2, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 2, name: "Shared Grocery List something something something", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
 	{id: 11, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
 	{id: 12, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
 	{id: 21, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
@@ -54,12 +54,20 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 		setListManagementModalVisible(false);
 	}
 
+	function handleListCardPress(listName: string, listTags: ListTag[], listItems: ListItem[]) {
+		navigation.navigate('List', {
+			listName,
+			listTags,
+			listItems
+		});
+	}
+
 
 	return (
         <View style={styles.mainContainer}>
             <ScrollView style={styles.mainScrollViewContainer} contentContainerStyle={styles.mainScrollViewContentContainer}>
                 {listsArr.map((list, index) =>
-                    <TouchableOpacity key={list.id} style={styles.listCardTouchable} activeOpacity={0.4}>
+                    <TouchableOpacity key={list.id} style={styles.listCardTouchable} activeOpacity={0.4} onPress={() => handleListCardPress(list.name, list.tags, list.items)}>
                         <View style={styles.listCard}>
                             <Menu 
                                 button={<MenuButton />}

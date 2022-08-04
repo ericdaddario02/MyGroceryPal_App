@@ -7,3 +7,7 @@ export const joinIcon = require('../assets/images/join.png');
 // === ListManagementModal Images ===
 export const copyIcon = require('../assets/images/copy.png');
 // ===
+
+// === React Navigation Images ===
+export const backIcon = require('../assets/images/back.png');
+// ===

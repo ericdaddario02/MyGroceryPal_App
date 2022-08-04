@@ -144,7 +144,7 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
             style={{ margin: 0 }} // margin to 0 to more accurately position the modal popup at an 'absolute' window position
 			onBackdropPress={() => closeModal()}
 			onBackButtonPress={() => closeModal()}
-			backdropOpacity={0.3}
+			backdropOpacity={0.4}
 			onModalHide={() => {if (onClose) onClose()}}
 			useNativeDriver
         >
