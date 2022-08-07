@@ -63,9 +63,7 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 			case 'create':
 				return (
 					<View style={styles.row}>
-						<Text style={styles.inputPrompt}>
-							Name:
-						</Text>
+						<Text style={styles.inputPrompt}>Name:</Text>
 						<TextInput
 							style={styles.input}
 							value={nameInput}
@@ -76,9 +74,7 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 			case 'join':
 				return (
 					<View style={styles.row}>
-						<Text style={styles.inputPrompt}>
-							Invite Code:
-						</Text>
+						<Text style={styles.inputPrompt}>Invite Code:</Text>
 						<TextInput
 							style={styles.input}
 							value={inviteCodeInput}
@@ -89,9 +85,7 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 			case 'edit':
 				return (
 					<View style={styles.row}>
-						<Text style={styles.inputPrompt}>
-							Name:
-						</Text>
+						<Text style={styles.inputPrompt}>Name:</Text>
 						<TextInput
 							style={styles.input}
 							value={nameInput}
@@ -103,13 +97,9 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 				return (
 					<View>
 						<View style={styles.row}>
-							<Text style={styles.inputPrompt}>
-								Invite Code:
-							</Text>
+							<Text style={styles.inputPrompt}>Invite Code:</Text>
 							<View style={styles.inviteCode}>
-								<Text style={styles.inviteCodeText}>
-									{list?.inviteCode}
-								</Text>
+								<Text style={styles.inviteCodeText}>{list?.inviteCode}</Text>
 							</View>
 							<View style={styles.inviteCodeCopyButtonContainer}>
 								<TouchableOpacity activeOpacity={0.4} style={styles.inviteCodeCopyButtonTouchable} onPress={() => handleCopyButtonPress(list?.inviteCode ?? '')}>

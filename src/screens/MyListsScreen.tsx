@@ -13,8 +13,21 @@ import type { MyListsScreenProps, List, ListTag, ListItem, ValidListManagementMo
 
 
 let testData: List[] = [
-	{id: 1, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 2, name: "Shared Grocery List something something something", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	{id: 1, name: "Grocery List", items: [], tags: [
+		{id: 1, name: 'On Sale', colour: 'red'},
+		{id: 2, name: 'FreshCo', colour: 'green'},
+		{id: 3, name: 'Loblaws', colour: 'blue'},
+		{id: 4, name: 'Dairy', colour: 'brown'},
+		{id: 5, name: 'Grains', colour: 'yellow'},
+		{id: 6, name: 'Vegetables', colour: '#FF64B3'},
+		{id: 7, name: 'Frozen Foods Yay!!!!!!!', colour: '#07F7BF'},
+		
+	], isOwner: true, inviteCode: '12345678'},
+	{id: 2, name: "Shared Grocery List something something something", items: [], tags: [
+		{id: 1, name: 'On Sale', colour: 'red'},
+		{id: 2, name: 'FreshCo', colour: 'green'},
+		{id: 3, name: 'Loblaws', colour: 'blue'},
+	], isOwner: false, inviteCode: 'abcdefgh'},
 	{id: 11, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
 	{id: 12, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
 	{id: 21, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},

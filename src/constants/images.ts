@@ -4,6 +4,10 @@ export const plusIcon = require('../assets/images/plus.png');
 export const joinIcon = require('../assets/images/join.png');
 // ===
 
+// === ListScreen Images ===
+export const dropdownArrowIcon = require('../assets/images/dropdownArrow.png');
+// ===
+
 // === ListManagementModal Images ===
 export const copyIcon = require('../assets/images/copy.png');
 // ===
