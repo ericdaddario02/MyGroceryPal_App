@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Animated, Easing, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { s as hs, vs } from 'react-native-size-matters';
 
 import { ResponsiveText as Text } from '../components/ResponsiveText';
@@ -84,6 +84,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 					<Animated.Image source={dropdownArrowIcon} resizeMode="contain" style={[styles.filterIcon, {transform: [{rotate: filterIconRotationDeg}]}]}/>
 				</TouchableOpacity>
 			</View>
+
 			<Animated.View style={[styles.filterTagsAnimatedView, {height: filterAnimationValues.filterTagsContainerHeight}]}>
 				<View style={{marginTop: 1}} onLayout={({ nativeEvent }) => handleFilterTagsContainerHeightChange(nativeEvent.layout.height)}>
 					<View style={styles.filterTagsContainer}>
@@ -98,6 +99,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 					</View>
 				</View>
 			</Animated.View>
+
 			<View style={styles.activeFiltersContainer}>
 				{route.params.listTags.map((tag, index) =>
 					activeFilters[index]
@@ -108,12 +110,51 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 					</View>
 				)}
 			</View>
+
+			<ScrollView contentContainerStyle={styles.allListItemsContainer}>
+				{route.params.listItems.map((item, index) =>
+					<View style={styles.listItemCardRow}>
+						<View style={styles.listItemCardLeftBullet}/>
+						<View style={styles.listItemCard}>
+							<TouchableOpacity activeOpacity={0.5} style={styles.listItemCardTouchable}>
+								<View style={styles.listItemCardTopRow}>
+									<Text style={styles.listItemCardName}>{item.name}</Text>
+									{item.price &&
+										<Text style={styles.listItemCardPrice}>{'$' + item.price}</Text>
+									}
+								</View>
+
+								{item.additionalNotes &&
+									<View style={styles.listItemCardAdditionalNotesContainer}>
+										<Text style={styles.listItemCardAdditionalNotes}>{item.additionalNotes}</Text>
+									</View>
+								}
+
+								{item.tags.length > 0
+									?
+									<View style={styles.listItemCardTagsContainer}>
+										{item.tags.map(tag => 
+											<View style={styles.listItemCardTag}>
+												<View style={[styles.listItemCardTagCircle, {backgroundColor: tag.colour}]}/>
+												<Text style={styles.listItemCardTagName}>{tag.name}</Text>
+											</View>
+										)}
+									</View>
+									:
+									<View style={styles.listItemCardNoTagsBottomPadding}/>
+								}
+							</TouchableOpacity>
+						</View>
+					</View>
+				)}
+			</ScrollView>
 		</View>
 	);
 }
 
 
 const styles = StyleSheet.create({
+	// Filter Button
 	filterButtonContainer: {
 		height: vs(40),
 		width: '100%',
@@ -140,6 +181,8 @@ const styles = StyleSheet.create({
 		marginLeft: hs(4),
 		tintColor: textColours.blue
 	},
+
+	// Collapsible Filter View
 	filterTagsAnimatedView: {
 		borderBottomColor: appColours.dividerColour,
 		borderBottomWidth: 1,
@@ -179,10 +222,12 @@ const styles = StyleSheet.create({
 		fontFamily: appFonts.regular,
 		color: 'black'
 	},
+
+	// Active Filters
 	activeFiltersContainer: {
 		flexDirection: 'row',
 		paddingTop: vs(8),
-		paddingBottom: vs(3),
+		paddingBottom: vs(7),
 		flexWrap: 'wrap',
 		paddingLeft: hs(16),
 		paddingRight: hs(10),  // right and left separated since the active filter views themselves have a right margin,
@@ -200,8 +245,8 @@ const styles = StyleSheet.create({
 	},
 	activeFilterCircle: {
 		borderRadius: 100,
-		height: hs(6),
-		width: hs(6),
+		height: hs(7),
+		width: hs(7),
 		marginRight: hs(3),
 		borderWidth: 1,
 		borderColor: 'black',
@@ -210,6 +255,90 @@ const styles = StyleSheet.create({
 		fontSize: 9,
 		fontFamily: appFonts.regular,
 		color: 'black'
+	},
+
+	// List Items
+	allListItemsContainer: {
+		paddingHorizontal: hs(16)
+	},
+	listItemCardRow: {
+		marginBottom: vs(12),
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	listItemCardLeftBullet: {
+		width: hs(13),
+		height: vs(3),
+		backgroundColor: appColours.grey,
+		borderRadius: 3,
+		marginRight: hs(10)
+	},
+	listItemCard: {
+		borderWidth: 3,
+		borderColor: appColours.grey,
+		borderRadius: 10,
+		flex: 1
+	},
+	listItemCardTouchable: {
+		paddingTop: vs(4),
+		paddingHorizontal: hs(7)
+	},
+	listItemCardTopRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'flex-start'
+	},
+	listItemCardName: {
+		fontSize: 17,
+		fontFamily: appFonts.medium,
+		color: 'black',
+		flexShrink: 1
+	},
+	listItemCardPrice: {
+		fontSize: 14,
+		fontFamily: appFonts.regular,
+		color: textColours.grey
+	},
+	listItemCardAdditionalNotesContainer: {
+		marginTop: vs(3)
+	},
+	listItemCardAdditionalNotes: {
+		fontSize: 12,
+		fontFamily: appFonts.regular,
+		color: textColours.grey
+	},
+	listItemCardTagsContainer: {
+		flexDirection: 'row-reverse',
+		flexWrap: 'wrap',
+		marginTop: vs(5),
+		marginBottom: vs(1)
+	},
+	listItemCardTag: {
+		borderWidth: 1,
+		borderColor: appColours.grey,
+		borderRadius: 10,
+		paddingHorizontal: hs(3),
+		paddingVertical: vs(0.5),
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginLeft: hs(6),
+		marginBottom: vs(4)
+	},
+	listItemCardTagCircle: {
+		borderRadius: 100,
+		height: hs(7),
+		width: hs(7),
+		marginRight: hs(3),
+		borderWidth: 1,
+		borderColor: 'black',
+	},
+	listItemCardTagName: {
+		fontSize: 9,
+		fontFamily: appFonts.regular,
+		color: 'black'
+	},
+	listItemCardNoTagsBottomPadding: {
+		height: vs(5)
 	}
 });
 

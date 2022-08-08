@@ -21,8 +21,8 @@ export interface ListTag {
 export interface ListItem {
 	id: number,
 	name: string,
-	additionalNotes: string,
-	price: string,
+	additionalNotes: string | null,
+	price: string | null,
 	tags: ListTag[]
 };
 

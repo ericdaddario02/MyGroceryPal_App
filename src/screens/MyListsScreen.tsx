@@ -13,7 +13,16 @@ import type { MyListsScreenProps, List, ListTag, ListItem, ValidListManagementMo
 
 
 let testData: List[] = [
-	{id: 1, name: "Grocery List", items: [], tags: [
+	{id: 1, name: "Grocery List", items: [
+		{id: 1, name: 'Milk', additionalNotes: 'these are some additional notes. yayayaya... i really like milk', price: '3.99', tags: [{id: 1, name: 'On Sale', colour: 'red'}, {id: 2, name: 'FreshCo', colour: 'green'},{id: 3, name: 'Loblaws', colour: 'blue'},
+		{id: 4, name: 'Dairy', colour: 'brown'},
+		{id: 5, name: 'Grains', colour: 'yellow'},
+		{id: 6, name: 'Vegetables', colour: '#FF64B3'},
+		{id: 7, name: 'Frozen Foods Yay!!!!!!!', colour: '#07F7BF'},]},
+		{id: 1, name: 'some list item with a really really long name', additionalNotes: 'some additional notes', price: null, tags: []},
+		{id: 1, name: 'some list item with a really really long name with a price', additionalNotes: null, price: '12.99', tags: []},
+		{id: 1, name: 'no notes or price but tags', additionalNotes: null, price: null, tags: [{id: 1, name: 'On Sale', colour: 'red'}, {id: 2, name: 'FreshCo', colour: 'green'}]}
+	], tags: [
 		{id: 1, name: 'On Sale', colour: 'red'},
 		{id: 2, name: 'FreshCo', colour: 'green'},
 		{id: 3, name: 'Loblaws', colour: 'blue'},
@@ -21,7 +30,6 @@ let testData: List[] = [
 		{id: 5, name: 'Grains', colour: 'yellow'},
 		{id: 6, name: 'Vegetables', colour: '#FF64B3'},
 		{id: 7, name: 'Frozen Foods Yay!!!!!!!', colour: '#07F7BF'},
-		
 	], isOwner: true, inviteCode: '12345678'},
 	{id: 2, name: "Shared Grocery List something something something", items: [], tags: [
 		{id: 1, name: 'On Sale', colour: 'red'},
