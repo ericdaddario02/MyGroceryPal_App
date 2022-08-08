@@ -12,7 +12,7 @@ import type { ListScreenProps, List, ListTag, ListItem } from '../types/types';
 
 function ListScreen({ navigation, route }: ListScreenProps) {
 	const [ isFilterPressed, setIsFilterPressed ] = useState<boolean>(false);
-	const [ activeTags, setActiveFlags ] = useState<boolean[]>(new Array(route.params.listTags.length).fill(false));
+	const [ activeFilters, setActiveFilters ] = useState<boolean[]>(new Array(route.params.listTags.length).fill(false));
 
 	const filterAnimationValues = useMemo(() => {
 		return {
@@ -70,9 +70,9 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 	}
 
 	function handleFilterTagPress(tag: ListTag, index: number) {
-		let tempArr = [...activeTags];
+		let tempArr = [...activeFilters];
 		tempArr[index] = !tempArr[index];
-		setActiveFlags(tempArr);
+		setActiveFilters(tempArr);
 	}
 
 
@@ -88,7 +88,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				<View style={{marginTop: 1}} onLayout={({ nativeEvent }) => handleFilterTagsContainerHeightChange(nativeEvent.layout.height)}>
 					<View style={styles.filterTagsContainer}>
 						{route.params.listTags.map((tag, index) =>
-							<View key={tag.id} style={[styles.filterTagButton, {backgroundColor: activeTags[index] ? 'rgba(74, 196, 247, .15)': 'white'}]}>
+							<View key={tag.id} style={[styles.filterTagButton, {backgroundColor: activeFilters[index] ? 'rgba(74, 196, 247, .15)': 'white'}]}>
 								<TouchableOpacity activeOpacity={0.6} style={styles.filterTagButtonTouchable} onPress={() => handleFilterTagPress(tag, index)}>
 									<View style={[styles.filterTagCircle, {backgroundColor: tag.colour}]}/>
 									<Text style={styles.filterTagName}>{tag.name}</Text>
@@ -98,6 +98,16 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 					</View>
 				</View>
 			</Animated.View>
+			<View style={styles.activeFiltersContainer}>
+				{route.params.listTags.map((tag, index) =>
+					activeFilters[index]
+					&&
+					<View style={styles.activeFilter}>
+						<View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
+						<Text style={styles.activeFilterName}>{tag.name}</Text>
+					</View>
+				)}
+			</View>
 		</View>
 	);
 }
@@ -166,6 +176,38 @@ const styles = StyleSheet.create({
 	},
 	filterTagName: {
 		fontSize: 12,
+		fontFamily: appFonts.regular,
+		color: 'black'
+	},
+	activeFiltersContainer: {
+		flexDirection: 'row',
+		paddingTop: vs(8),
+		paddingBottom: vs(3),
+		flexWrap: 'wrap',
+		paddingLeft: hs(16),
+		paddingRight: hs(10),  // right and left separated since the active filter views themselves have a right margin,
+	},
+	activeFilter: {
+		borderWidth: 1,
+		borderColor: appColours.grey,
+		borderRadius: 10,
+		paddingHorizontal: hs(3),
+		paddingVertical: vs(0.5),
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginRight: hs(6),
+		marginBottom: vs(5)
+	},
+	activeFilterCircle: {
+		borderRadius: 100,
+		height: hs(6),
+		width: hs(6),
+		marginRight: hs(3),
+		borderWidth: 1,
+		borderColor: 'black',
+	},
+	activeFilterName: {
+		fontSize: 9,
 		fontFamily: appFonts.regular,
 		color: 'black'
 	}
