@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
 		paddingVertical: vs(15)
 	},
 	mainScrollViewContentContainer: {
-		paddingBottom: vs(15) + vs(100)  // + vs(100) to offset the floating buttons container
+		paddingBottom: vs(15) + vs(108)  // + vs(108) to offset the floating buttons container
 	},
 	listCard: {
 		flex: 1,
@@ -187,8 +187,11 @@ const styles = StyleSheet.create({
 	},
 	listCardMenuButtonContainer: {
 		position: 'absolute',
-		right: hs(3),
-		top: vs(2)
+		right: 0,
+		top: 0,
+		paddingLeft: hs(5),
+		paddingBottom: vs(5),
+		zIndex: 1
 	},
     sharedListIcon: {
         position: 'absolute',
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
     },
     floatingButtonText: {
         fontFamily: appFonts.medium,
-        fontSize: 14,
+        fontSize: 15,
         color: textColours.blue
     }
 });

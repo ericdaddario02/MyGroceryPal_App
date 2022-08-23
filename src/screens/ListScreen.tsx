@@ -174,15 +174,14 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 const styles = StyleSheet.create({
 	// Filter Button
 	filterButtonContainer: {
-		height: vs(40),
 		width: '100%',
-		paddingHorizontal: hs(16),
+		paddingHorizontal: hs(8),
 		flexDirection: 'row-reverse',
 		alignItems: 'center'
 	},
 	filterTouchable: {
-		paddingHorizontal: hs(5),
-		paddingVertical: vs(3),
+		paddingHorizontal: hs(12),
+		paddingVertical: vs(8),
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center'

@@ -165,9 +165,9 @@ const menuItemStyles = StyleSheet.create({
 
 const menuButtonStyles = StyleSheet.create({
 	container: {
-		height: vs(24),
-		width: hs(10),
-		paddingVertical: vs(3),
+		height: vs(28),
+		paddingHorizontal: hs(6),
+		paddingVertical: vs(5),
 		justifyContent: 'space-between',
 		alignItems: 'center'
 	},

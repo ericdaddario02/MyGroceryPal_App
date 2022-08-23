@@ -112,8 +112,8 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
 		buttonsContainer: {
             flexDirection: 'row-reverse',
 			paddingTop: vs(5),
-			paddingBottom: vs(7),
-			paddingHorizontal: vs(7),
+			paddingBottom: hs(8),
+			paddingHorizontal: hs(8),
             justifyContent: 'space-between'
         },
         button: {
