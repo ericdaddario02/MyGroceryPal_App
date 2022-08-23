@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Animated, Easing, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { s as hs, vs } from 'react-native-size-matters';
 
+import { ListItemCardModal } from '../components/ListItemCardModal';
 import { ResponsiveText as Text } from '../components/ResponsiveText';
 import { appColours, textColours } from '../constants/colours';
 import { appFonts } from '../constants/fonts';
@@ -13,6 +14,8 @@ import type { ListScreenProps, List, ListTag, ListItem } from '../types/types';
 function ListScreen({ navigation, route }: ListScreenProps) {
 	const [ isFilterPressed, setIsFilterPressed ] = useState<boolean>(false);
 	const [ activeFilters, setActiveFilters ] = useState<boolean[]>(new Array(route.params.listTags.length).fill(false));
+	const [ listItemCardModalVisible, setListItemCardModalVisible ] = useState<boolean>(false);
+	const [ listItemCardModalListItem, setListItemCardModalListItem ] = useState<ListItem|null>(null);
 
 	const filterAnimationValues = useMemo(() => {
 		return {
@@ -75,6 +78,15 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 		setActiveFilters(tempArr);
 	}
 
+	function showListItemCardModal(listItem: ListItem|null) {
+		setListItemCardModalListItem(listItem);
+		setListItemCardModalVisible(true);
+	}
+
+	function hideListItemCardModal() {
+		setListItemCardModalVisible(false);
+	}
+
 
 	return (
 		<View>
@@ -101,10 +113,8 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 			</Animated.View>
 
 			<View style={styles.activeFiltersContainer}>
-				{route.params.listTags.map((tag, index) =>
-					activeFilters[index]
-					&&
-					<View style={styles.activeFilter}>
+				{route.params.listTags.map((tag, index) => activeFilters[index] &&
+					<View key={tag.id} style={styles.activeFilter}>
 						<View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
 						<Text style={styles.activeFilterName}>{tag.name}</Text>
 					</View>
@@ -113,10 +123,10 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 			<ScrollView contentContainerStyle={styles.allListItemsContainer}>
 				{route.params.listItems.map((item, index) =>
-					<View style={styles.listItemCardRow}>
+					<View key={item.id} style={styles.listItemCardRow}>
 						<View style={styles.listItemCardLeftBullet}/>
 						<View style={styles.listItemCard}>
-							<TouchableOpacity activeOpacity={0.5} style={styles.listItemCardTouchable}>
+							<TouchableOpacity activeOpacity={0.5} style={styles.listItemCardTouchable} onPress={() => showListItemCardModal(item)}>
 								<View style={styles.listItemCardTopRow}>
 									<Text style={styles.listItemCardName}>{item.name}</Text>
 									{item.price &&
@@ -134,7 +144,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 									?
 									<View style={styles.listItemCardTagsContainer}>
 										{item.tags.map(tag => 
-											<View style={styles.listItemCardTag}>
+											<View key={tag.id} style={styles.listItemCardTag}>
 												<View style={[styles.listItemCardTagCircle, {backgroundColor: tag.colour}]}/>
 												<Text style={styles.listItemCardTagName}>{tag.name}</Text>
 											</View>
@@ -148,6 +158,14 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 					</View>
 				)}
 			</ScrollView>
+
+			<ListItemCardModal
+				isVisible={listItemCardModalVisible}
+				listItem={listItemCardModalListItem}
+				listTags={route.params.listTags}
+				closeModal={hideListItemCardModal}
+				setListsArr={route.params.setListsArr}
+			/>
 		</View>
 	);
 }
@@ -310,7 +328,7 @@ const styles = StyleSheet.create({
 	listItemCardTagsContainer: {
 		flexDirection: 'row-reverse',
 		flexWrap: 'wrap',
-		marginTop: vs(5),
+		marginTop: vs(7),
 		marginBottom: vs(1)
 	},
 	listItemCardTag: {

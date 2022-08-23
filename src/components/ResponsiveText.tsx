@@ -9,7 +9,7 @@ type ResponsiveTextProps = TextProps & FontStyleProps;
 
 export function ResponsiveText(props: ResponsiveTextProps) {
 	return (
-		<Text {...props} style={[{fontSize: props.style?.fontSize ? mhs(props.style.fontSize, 0.3) : undefined}, props.style]}> 
+		<Text {...props} style={[props.style, {fontSize: props.style?.fontSize ? mhs(props.style.fontSize, 0.4) : undefined}]}> 
 			{props.children}
 		</Text>
 	);

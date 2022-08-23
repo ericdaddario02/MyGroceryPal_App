@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@react-native-clipboard/clipboard": "^1.10.0",
+    "@react-native-community/checkbox": "^0.5.12",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "react": "18.0.0",

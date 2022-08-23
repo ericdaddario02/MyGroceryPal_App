@@ -5,12 +5,11 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { StyledModal } from './StyledModal';
 import { ResponsiveText as Text } from './ResponsiveText';
 import { appFonts } from '../constants/fonts';
-import { appColours } from '../constants/colours';
+import { appColours, textColours } from '../constants/colours';
 import { copyIcon } from '../constants/images';
 import { s as hs, vs } from 'react-native-size-matters';
 
-import type { List, ValidListManagementModalType } from '../types/types';
-import type { StyledModalButton } from '../types/types';
+import type { List, ValidListManagementModalType, StyledModalButton } from '../types/types';
 
 
 interface ListManagementModalProps {
@@ -187,7 +186,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 0,
 		paddingHorizontal: hs(6),
 		fontFamily: appFonts.regular,
-		fontSize: 13.5
+		fontSize: 13.5,
+		color: textColours.grey
 	},
 	deleteText: {
 		fontFamily: appFonts.regular,

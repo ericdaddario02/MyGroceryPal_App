@@ -84,12 +84,12 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
             borderRadius: 10,
             borderColor: borderColor ?? appColours.grey,
 			backgroundColor: 'white',
-			width: '95%',
+			width: '93%',
 			alignSelf: 'center'
         },
         titleContainer: {
             paddingVertical: vs(5),
-            paddingHorizontal: hs(7),
+            paddingHorizontal: hs(8),
 			marginBottom: vs(5),
             borderBottomWidth: 1,
             borderBottomColor: appColours.dividerColour
@@ -101,13 +101,19 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
         },
         childrenContainer: {
             paddingVertical: vs(5),
-            paddingHorizontal: hs(8)
+            paddingHorizontal: hs(9)
         },
+		childrenDivider: {
+			width: '100%',
+			height: 1,
+			backgroundColor: appColours.dividerColour,
+			marginVertical: vs(5)
+		},
 		buttonsContainer: {
             flexDirection: 'row-reverse',
 			paddingTop: vs(5),
 			paddingBottom: vs(7),
-			paddingHorizontal: hs(7),
+			paddingHorizontal: vs(7),
             justifyContent: 'space-between'
         },
         button: {
@@ -153,22 +159,37 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
                     <Text style={styles.titleText}>{title}</Text>
                 </View>
                 
-                <View style={styles.childrenContainer}>
+				{Array.isArray(children)
+				?
+				children.map((child, index) =>
+					<View key={'child' + index}>
+						<View style={styles.childrenContainer}>
+							{child}
+						</View>
+
+						{index != children.length - 1 && 
+							<View style={styles.childrenDivider}/>
+						}
+					</View>					
+				)
+				:
+				<View style={styles.childrenContainer}>
                     {children}
                 </View>
+				}
 
                 <View style={styles.buttonsContainer}>
+					{rightButton &&
+                        <View style={styles.button}>
+                            <TouchableOpacity activeOpacity={0.3} onPress={rightButton.onPress} style={styles.buttonTouchable}>
+                                <Text style={styles.rightButtonText}>{rightButton.text}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
                     {leftButton &&
                         <View style={styles.button}>
                             <TouchableOpacity activeOpacity={0.3} onPress={leftButton.onPress} style={styles.buttonTouchable}>
                                 <Text style={styles.leftButtonText}>{leftButton.text}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    }
-                    {rightButton &&
-                        <View style={styles.button}>
-                            <TouchableOpacity activeOpacity={0.3} onPress={rightButton.onPress} style={styles.buttonTouchable}>
-                                <Text style={styles.rightButtonText}>{rightButton.text}</Text>
                             </TouchableOpacity>
                         </View>
                     }
