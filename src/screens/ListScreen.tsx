@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
 	},
 	filterText: {
 		fontFamily: appFonts.regular,
-		fontSize: 16,
+		fontSize: 17,
 		color: textColours.blue
 	},
 	filterIcon: {
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 	},
 	filterTagName: {
-		fontSize: 12,
+		fontSize: 13,
 		fontFamily: appFonts.regular,
 		color: 'black'
 	},
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 	},
 	activeFilterName: {
-		fontSize: 9,
+		fontSize: 10,
 		fontFamily: appFonts.regular,
 		color: 'black'
 	},
@@ -320,13 +320,13 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-start'
 	},
 	listItemCardName: {
-		fontSize: 17,
+		fontSize: 18,
 		fontFamily: appFonts.medium,
 		color: 'black',
 		flexShrink: 1
 	},
 	listItemCardPrice: {
-		fontSize: 14,
+		fontSize: 15,
 		fontFamily: appFonts.regular,
 		color: textColours.grey
 	},
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
 		marginTop: vs(3)
 	},
 	listItemCardAdditionalNotes: {
-		fontSize: 12,
+		fontSize: 13,
 		fontFamily: appFonts.regular,
 		color: textColours.grey
 	},
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 	},
 	listItemCardTagName: {
-		fontSize: 9,
+		fontSize: 10,
 		fontFamily: appFonts.regular,
 		color: 'black'
 	},

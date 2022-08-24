@@ -125,16 +125,16 @@ export function StyledModal({ title, children, isVisible, borderColor, rightButt
 		buttonTouchable: {
 			alignItems: 'center',
 			paddingVertical: vs(3),
-            paddingHorizontal: hs(9)
+            paddingHorizontal: hs(11)
 		},
         leftButtonText: {
             fontFamily: appFonts.medium,
-            fontSize: 14,
+            fontSize: 15,
             color: leftButton?.textColour ?? textColours.blue
         },
         rightButtonText: {
             fontFamily: appFonts.medium,
-            fontSize: 14,
+            fontSize: 15,
             color: rightButton?.textColour ?? textColours.blue
         }
     }), [borderColor, leftButton, rightButton]);

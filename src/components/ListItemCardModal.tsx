@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 0,
 		paddingHorizontal: hs(6),
 		fontFamily: appFonts.regular,
-		fontSize: 13.5,
+		fontSize: 15,
 		color: textColours.grey
 	},
 	additionalNotesInput: {
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
 		fontFamily: appFonts.regular,
 		minHeight: vs(50),
 		maxHeight: vs(100),
-		fontSize: 12,
+		fontSize: 13,
 		color: textColours.grey,
 		marginTop: vs(13)
 	},
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 0,
 		paddingHorizontal: hs(6),
 		fontFamily: appFonts.regular,
-		fontSize: 13.5,
+		fontSize: 15,
 		color: textColours.grey
 	},
 	tagsContainer: {
@@ -262,19 +262,17 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 	},
 	tagName: {
-		fontSize: 10,
+		fontSize: 11,
 		fontFamily: appFonts.regular,
 		color: 'black'
 	},
 	tagXIconTouchable: {
-		marginLeft: hs(0),
-		// backgroundColor: 'blue',
-		paddingVertical: vs(3),
+		paddingVertical: vs(4),
 		paddingHorizontal: hs(4),
 	},
 	tagXIcon: {
-		width: hs(6),
-		height: hs(6),
+		width: hs(7),
+		height: hs(7),
 		tintColor: textColours.grey
 	}
 });

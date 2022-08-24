@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 0,
 		paddingHorizontal: hs(6),
 		fontFamily: appFonts.regular,
-		fontSize: 13.5,
+		fontSize: 15,
 		color: textColours.grey
 	},
 	deleteText: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
 	},
 	inviteCodeText: {
 		color: '#575757',
-		fontSize: 13.5,
+		fontSize: 15,
 		fontFamily: appFonts.regular
 	},
 	inviteCodeCopyButtonTouchable: {
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
 		tintColor: '#3F3F3F'
 	},
 	inviteCodeExplanationText: {
-		fontSize: 12.5,
+		fontSize: 13,
 		fontFamily: appFonts.light,
 		color: 'black',
 		marginTop: vs(5)
