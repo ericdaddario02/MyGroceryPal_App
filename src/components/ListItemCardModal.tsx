@@ -17,7 +17,11 @@ interface ListItemCardModalProps {
 	listItem: ListItem | null,
 	listTags: ListTag[],
 	closeModal: Function,
-	setListsArr: React.Dispatch<React.SetStateAction<List[]>>
+    stateSetters: {
+        setListsArr: React.Dispatch<React.SetStateAction<List[]>>,
+        setListItems: React.Dispatch<React.SetStateAction<ListItem[]>>,
+        setListTags: React.Dispatch<React.SetStateAction<ListTag[]>>
+    }
 }
 
 
@@ -25,7 +29,7 @@ interface ListItemCardModalProps {
  * **Note**: If `listItem` is null, the modal will be in 'Add New Item' mode.  
  * If `listItem` is not null, the modal will be in 'Edit Item' mode.
  */
-export function ListItemCardModal({ isVisible, listItem, listTags, closeModal, setListsArr }: ListItemCardModalProps) {
+export function ListItemCardModal({ isVisible, listItem, listTags, closeModal, stateSetters }: ListItemCardModalProps) {
 	const [ nameInput, setNameInput ] = useState<string>('');
 	const [ additionalNotesInput, setAdditionalNotesInput ] = useState<string>('');
 	const [ priceInput, setPriceInput ] = useState<string>('');
@@ -79,6 +83,12 @@ export function ListItemCardModal({ isVisible, listItem, listTags, closeModal, s
 	function handleDeleteOnPress() {
 		console.log('delete!!!');
 	}
+
+    function handleAddTag(tagName: string) {
+        if (!tagName) {
+
+        }
+    }
 
 	function handleTagRemoveOnPress(tagIndex: number) {
 		let tempArr = [...listItemTags];

@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Animated, Easing, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { s as hs, vs } from 'react-native-size-matters';
 
 import { ListItemCardModal } from '../components/ListItemCardModal';
 import { ResponsiveText as Text } from '../components/ResponsiveText';
 import { appColours, textColours } from '../constants/colours';
 import { appFonts } from '../constants/fonts';
-import { dropdownArrowIcon } from '../constants/images';
+import { dropdownArrowIcon, plusIcon } from '../constants/images';
 
-import type { ListScreenProps, List, ListTag, ListItem } from '../types/types';
+import type { ListScreenProps, ListTag, ListItem } from '../types/types';
 
 
 function ListScreen({ navigation, route }: ListScreenProps) {
@@ -102,7 +102,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 
 	return (
-		<View>
+		<View style={styles.mainContainer}>
 			<View style={styles.filterButtonContainer}>
 				<TouchableOpacity activeOpacity={0.4} style={styles.filterTouchable} onPress={handleFilterButtonPress}>
 					<Text style={styles.filterText}>Filter</Text>
@@ -125,16 +125,19 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				</View>
 			</Animated.View>
 
-			<View style={styles.activeFiltersContainer}>
-				{listTags.map((tag, index) => activeFilters[index] &&
-					<View key={tag.id} style={styles.activeFilter}>
-						<View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
-						<Text style={styles.activeFilterName}>{tag.name}</Text>
-					</View>
-				)}
-			</View>
+            {
+                !activeFilters.every(flag => flag == false) &&
+                <View style={styles.activeFiltersContainer}>
+                    {listTags.map((tag, index) => activeFilters[index] &&
+                        <View key={tag.id} style={styles.activeFilter}>
+                            <View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
+                            <Text style={styles.activeFilterName}>{tag.name}</Text>
+                        </View>
+                    )}
+                </View>
+            }
 
-			<ScrollView contentContainerStyle={styles.allListItemsContainer}>
+			<ScrollView contentContainerStyle={[styles.allListItemsContainer, {paddingTop: activeFilters.every(flag => flag == false) ? vs(15) : vs(5)}]}>
 				{listItems.map((item, index) =>
 					doesListItemPassActiveFilters(item) &&
 					<View key={item.id} style={styles.listItemCardRow}>
@@ -173,12 +176,25 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				)}
 			</ScrollView>
 
+            <View style={styles.floatingButtonsContainer}>
+                <View style={styles.floatingButton}>
+                    <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable} onPress={() => showListItemCardModal(null)}>
+                        <Image source={plusIcon} resizeMode='contain' style={styles.floatingButtonIcon}/>
+                        <Text style={styles.floatingButtonText}>Add new item</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
 			<ListItemCardModal
 				isVisible={listItemCardModalVisible}
 				listItem={listItemCardModalListItem}
 				listTags={listTags}
 				closeModal={hideListItemCardModal}
-				setListsArr={route.params.setListsArr}
+				stateSetters={{
+                    setListsArr: route.params.setListsArr,
+                    setListItems,
+                    setListTags
+                }}
 			/>
 		</View>
 	);
@@ -186,6 +202,10 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 
 const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1
+    },
+
 	// Filter Button
 	filterButtonContainer: {
 		width: '100%',
@@ -258,7 +278,7 @@ const styles = StyleSheet.create({
 	activeFiltersContainer: {
 		flexDirection: 'row',
 		paddingTop: vs(8),
-		paddingBottom: vs(7),
+		paddingBottom: vs(3),
 		flexWrap: 'wrap',
 		paddingLeft: hs(16),
 		paddingRight: hs(10),  // right and left separated since the active filter views themselves have a right margin,
@@ -290,7 +310,8 @@ const styles = StyleSheet.create({
 
 	// List Items
 	allListItemsContainer: {
-		paddingHorizontal: hs(16)
+		paddingHorizontal: hs(16),
+        paddingBottom: vs(60)
 	},
 	listItemCardRow: {
 		marginBottom: vs(12),
@@ -323,7 +344,8 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		fontFamily: appFonts.medium,
 		color: 'black',
-		flexShrink: 1
+		flexShrink: 1,
+        marginRight: hs(5)
 	},
 	listItemCardPrice: {
 		fontSize: 15,
@@ -370,7 +392,47 @@ const styles = StyleSheet.create({
 	},
 	listItemCardNoTagsBottomPadding: {
 		height: vs(5)
-	}
+	},
+
+    // Floating Buttons
+    floatingButtonsContainer: {
+        position: 'absolute',
+        bottom: vs(23),
+        right: hs(15)
+    },
+    floatingButton: {
+        borderRadius: 7,
+        borderWidth: 2,
+        borderColor: appColours.grey,
+        backgroundColor: 'white',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.27,
+        shadowRadius: 4.65,
+
+        elevation: 6,
+    },
+    floatingButtonTouchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+		paddingVertical: vs(6),
+        paddingHorizontal: hs(6),
+    },
+    floatingButtonIcon: {
+        width: hs(14),
+        height: undefined,
+        aspectRatio: 1,
+        marginRight: hs(6),
+        tintColor: textColours.blue
+    },
+    floatingButtonText: {
+        fontFamily: appFonts.medium,
+        fontSize: 15,
+        color: textColours.blue
+    }
 });
 
 
