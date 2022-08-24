@@ -20,7 +20,7 @@ let testData: List[] = [
 		{id: 6, name: 'Vegetables', colour: '#FF64B3'},
 		{id: 7, name: 'Frozen Foods Yay!!!!!!!', colour: '#07F7BF'},]},
 		{id: 8, name: 'some list item with a really really long name', additionalNotes: 'some additional notes', price: null, tags: []},
-		{id: 9, name: 'some list item with a really really long name with a price', additionalNotes: null, price: '12.99', tags: []},
+		{id: 9, name: 'some list item with a really really long name with a price', additionalNotes: null, price: '12.99', tags: [{id: 2, name: 'FreshCo', colour: 'green'},{id: 3, name: 'Loblaws', colour: 'blue'},]},
 		{id: 10, name: 'no notes or price but tags', additionalNotes: null, price: null, tags: [{id: 1, name: 'On Sale', colour: 'red'}, {id: 2, name: 'FreshCo', colour: 'green'}]}
 	], tags: [
 		{id: 1, name: 'On Sale', colour: 'red'},

@@ -12,6 +12,9 @@ import type { ListScreenProps, List, ListTag, ListItem } from '../types/types';
 
 
 function ListScreen({ navigation, route }: ListScreenProps) {
+	const [ listItems, setListItems ] = useState<ListItem[]>(route.params.listItems);
+	const [ listTags, setListTags ] = useState<ListTag[]>(route.params.listTags);
+
 	const [ isFilterPressed, setIsFilterPressed ] = useState<boolean>(false);
 	const [ activeFilters, setActiveFilters ] = useState<boolean[]>(new Array(route.params.listTags.length).fill(false));
 	const [ listItemCardModalVisible, setListItemCardModalVisible ] = useState<boolean>(false);
@@ -67,7 +70,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 	function handleFilterTagsContainerHeightChange(height: number) {
 		if (height != 0) {
 			filterAnimationValues.tagsHeight = height;
-		} else if (route.params.listTags.length == 0) {
+		} else if (listTags.length == 0) {
 			filterAnimationValues.tagsHeight = 0;
 		}
 	}
@@ -87,6 +90,16 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 		setListItemCardModalVisible(false);
 	}
 
+	function doesListItemPassActiveFilters(listItem: ListItem) {
+		for (let [index, listTag] of listTags.entries()) {
+			if (activeFilters[index] && !listItem.tags.find(listItemTag => listItemTag.id == listTag.id)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 
 	return (
 		<View>
@@ -100,7 +113,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 			<Animated.View style={[styles.filterTagsAnimatedView, {height: filterAnimationValues.filterTagsContainerHeight}]}>
 				<View style={{marginTop: 1}} onLayout={({ nativeEvent }) => handleFilterTagsContainerHeightChange(nativeEvent.layout.height)}>
 					<View style={styles.filterTagsContainer}>
-						{route.params.listTags.map((tag, index) =>
+						{listTags.map((tag, index) =>
 							<View key={tag.id} style={[styles.filterTagButton, {backgroundColor: activeFilters[index] ? 'rgba(74, 196, 247, .15)': 'white'}]}>
 								<TouchableOpacity activeOpacity={0.6} style={styles.filterTagButtonTouchable} onPress={() => handleFilterTagPress(tag, index)}>
 									<View style={[styles.filterTagCircle, {backgroundColor: tag.colour}]}/>
@@ -113,7 +126,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 			</Animated.View>
 
 			<View style={styles.activeFiltersContainer}>
-				{route.params.listTags.map((tag, index) => activeFilters[index] &&
+				{listTags.map((tag, index) => activeFilters[index] &&
 					<View key={tag.id} style={styles.activeFilter}>
 						<View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
 						<Text style={styles.activeFilterName}>{tag.name}</Text>
@@ -122,7 +135,8 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 			</View>
 
 			<ScrollView contentContainerStyle={styles.allListItemsContainer}>
-				{route.params.listItems.map((item, index) =>
+				{listItems.map((item, index) =>
+					doesListItemPassActiveFilters(item) &&
 					<View key={item.id} style={styles.listItemCardRow}>
 						<View style={styles.listItemCardLeftBullet}/>
 						<View style={styles.listItemCard}>
@@ -162,7 +176,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 			<ListItemCardModal
 				isVisible={listItemCardModalVisible}
 				listItem={listItemCardModalListItem}
-				listTags={route.params.listTags}
+				listTags={listTags}
 				closeModal={hideListItemCardModal}
 				setListsArr={route.params.setListsArr}
 			/>
