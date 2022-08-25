@@ -8,7 +8,7 @@ export interface List {
 	name: string,
 	tags: ListTag[],
 	items: ListItem[],
-	isOwner: boolean,
+	isJoined: boolean,
     inviteCode: string
 };
 

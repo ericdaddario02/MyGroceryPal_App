@@ -158,7 +158,7 @@ const menuItemStyles = StyleSheet.create({
 	},
 	itemText: {
 		fontFamily: appFonts.regular,
-		fontSize: 12.5,
+		fontSize: 14,
 		color: textColours.grey
 	}
 });

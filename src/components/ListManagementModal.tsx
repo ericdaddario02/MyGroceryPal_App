@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { s as hs, vs } from 'react-native-size-matters';
 
 import { StyledModal } from './StyledModal';
 import { ResponsiveText as Text } from './ResponsiveText';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from '../constants/colours';
 import { copyIcon } from '../constants/images';
-import { s as hs, vs } from 'react-native-size-matters';
+import { findIndexOfListById, getNextIdFromCollection } from '../other/helpers';
+import { storeLocalData } from '../other/asyncStorageWrapper';
 
 import type { List, ValidListManagementModalType, StyledModalButton } from '../types/types';
 
@@ -131,11 +133,11 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 			case 'create':
 				return {text: 'Create', onPress: handleCreateOnPress};
 			case 'join':
-				return {text: 'Join', onPress: () => {console.log('joined!!!'); closeModal()}};
+				return {text: 'Join', onPress: handleJoinOnPress};
 			case 'edit':
-				return {text: 'Save', onPress: () => {console.log('saved!!!'); closeModal()}};
+				return {text: 'Save', onPress: handleSaveOnPress};
 			case 'delete':
-				return {text: 'Delete', textColour: 'red', onPress: () => {console.log('deleted!!!'); closeModal()}};
+				return {text: 'Delete', textColour: 'red', onPress: handleDeleteOnPress};
 			default:
 				return undefined;
 		}
@@ -147,9 +149,83 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 	}
 
 	function handleCreateOnPress() {
-		console.log('created!!!');
+		setListsArr(prevState => {
+            if (!nameInput) {
+                return prevState;
+            }
+
+            let nextId = getNextIdFromCollection(prevState);
+
+            let newState = [...prevState];
+            newState.push({
+                id: nextId,
+                name: nameInput,
+                tags: [],
+                items: [],
+                isJoined: false,
+                inviteCode: ''
+            });
+
+            storeLocalData('listsArr', newState);
+
+            return newState;
+        });
+        
 		closeModal();
 	}
+
+    function handleJoinOnPress() {
+        console.log('joined!!!');
+		closeModal();
+    }
+
+    function handleSaveOnPress() {
+        setListsArr(prevState => {
+            if (!list) {
+                return prevState;
+            }
+
+            let index = findIndexOfListById(prevState, list.id);
+
+            if (index == -1) {
+                console.error(`=== ERROR ===\nNo list with id=${list.id}.`);
+                return prevState;
+            }
+
+            let newState = [...prevState];
+            newState[index].name = nameInput;
+
+            storeLocalData('listsArr', newState);
+
+            return newState;
+        });
+
+		closeModal();
+    }
+
+    function handleDeleteOnPress() {
+        setListsArr(prevState => {
+            if (!list) {
+                return prevState;
+            }
+
+            let index = findIndexOfListById(prevState, list.id);
+
+            if (index == -1) {
+                console.error(`=== ERROR ===\nNo list with id=${list.id}.`);
+                return prevState;
+            }
+
+            let newState = [...prevState];
+            newState.splice(index, 1);
+
+            storeLocalData('listsArr', newState);
+
+            return newState;
+        });
+        
+		closeModal();
+    }
 
 
 	return (

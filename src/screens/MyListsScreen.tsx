@@ -8,6 +8,7 @@ import { ListManagementModal } from '../components/ListManagementModal';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from "../constants/colours";
 import { sharedListIcon, plusIcon, joinIcon } from '../constants/images';
+import { getLocalData } from '../other/asyncStorageWrapper';
 
 import type { MyListsScreenProps, List, ListTag, ListItem, ValidListManagementModalType } from '../types/types';
 
@@ -33,28 +34,28 @@ let testData: List[] = [
 		{id: 5, name: 'Grains', colour: 'yellow'},
 		{id: 6, name: 'Vegetables', colour: '#FF64B3'},
 		{id: 7, name: 'Frozen Foods Yay!!!!!!!', colour: '#07F7BF'},
-	], isOwner: true, inviteCode: '12345678'},
+	], isJoined: false, inviteCode: '12345678'},
 	{id: 2, name: "Shared Grocery List something something something", items: [], tags: [
 		{id: 1, name: 'On Sale', colour: 'red'},
 		{id: 2, name: 'FreshCo', colour: 'green'},
 		{id: 3, name: 'Loblaws', colour: 'blue'},
-	], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 11, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 12, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 21, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 22, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 31, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 32, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 41, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 42, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 51, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 52, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 61, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 62, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 71, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 72, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
-	{id: 81, name: "Grocery List", items: [], tags: [], isOwner: true, inviteCode: '12345678'},
-	{id: 82, name: "Shared Grocery List", items: [], tags: [], isOwner: false, inviteCode: 'abcdefgh'},
+	], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 11, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 12, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 21, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 22, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 31, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 32, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 41, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 42, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 51, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 52, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 61, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 62, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 71, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 72, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
+	{id: 81, name: "Grocery List", items: [], tags: [], isJoined: false, inviteCode: '12345678'},
+	{id: 82, name: "Shared Grocery List", items: [], tags: [], isJoined: true, inviteCode: 'abcdefgh'},
 ];
 
 
@@ -65,8 +66,19 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 	const [ listManagementModalVisible, setListManagementModalVisible ] = useState<boolean>(false);
 	
 	useEffect(() => {
-		setListsArr(testData);
+		loadData();
 	}, []);
+
+    async function loadData() {
+        let listsArrData = await getLocalData('listsArr');
+
+        if (!listsArrData) {
+            listsArrData = testData;
+            // storeLocalData('listsArr', testData);
+        }
+
+        setListsArr(listsArrData);
+    }
 
 	function showListManagementModal(type: ValidListManagementModalType, list: List|null) {
 		setListManagementModalType(type);
@@ -102,10 +114,10 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
                                     text='Edit List'
                                     onPress={() => showListManagementModal('edit', list)}
                                 />
-								<MenuItem
+								{/* <MenuItem
 									text='Invite Others'
 									onPress={() => showListManagementModal('invite', list)}
-								/>
+								/> */}
                                 <MenuDivider />
                                 <MenuItem
                                     text='Delete List'
@@ -115,7 +127,7 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 
                             <Text style={styles.listCardName}>{list.name}</Text>
 
-                            {!list.isOwner && 
+                            {list.isJoined && 
                                 <Image source={sharedListIcon} resizeMode='contain' style={styles.sharedListIcon}/>
                             }
                         </View>
@@ -131,14 +143,14 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.floatingButtonsContainerSpacer} />
+                {/* <View style={styles.floatingButtonsContainerSpacer} />
 
                 <View style={styles.floatingButton}>
                     <TouchableOpacity activeOpacity={0.3} style={styles.floatingButtonTouchable} onPress={() => showListManagementModal('join', null)}>
                         <Image source={joinIcon} resizeMode='contain' style={styles.floatingButtonIcon}/>
                         <Text style={styles.floatingButtonText}>Join new list</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
 
 			<ListManagementModal
@@ -162,7 +174,7 @@ const styles = StyleSheet.create({
 		paddingVertical: vs(15)
 	},
 	mainScrollViewContentContainer: {
-		paddingBottom: vs(15) + vs(108)  // + vs(108) to offset the floating buttons container
+		paddingBottom: vs(15) + vs(62)  // + vs(108) to offset two floating buttons and spacer
 	},
 	listCard: {
 		flex: 1,
