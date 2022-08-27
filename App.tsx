@@ -60,7 +60,7 @@ function App() {
 									<Image source={backIcon} resizeMode='contain' style={styles.headerLeftBackButtonIcon}/>
 								</TouchableOpacity>
 
-								<Text style={styles.headerTitleText}>{route.params.listName}</Text>
+								<Text adjustsFontSizeToFit style={styles.headerTitleText}>{route.params.list.name}</Text>
 							</View>
 						),
 						// headerTitle: () => (
@@ -105,7 +105,8 @@ const styles = StyleSheet.create({
 	headerTitleText: {
 		fontFamily: appFonts.semibold,
 		fontSize: 32,
-		color: 'black'
+		color: 'black',
+		flexShrink: 1
 	},
 	headerLeftBackButtonTouchable: {
 		paddingHorizontal: hs(7),

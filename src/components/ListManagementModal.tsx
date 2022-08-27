@@ -8,7 +8,7 @@ import { ResponsiveText as Text } from './ResponsiveText';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from '../constants/colours';
 import { copyIcon } from '../constants/images';
-import { findIndexOfListById, getNextIdFromCollection } from '../other/helpers';
+import { findIndexOfItemById, getNextIdFromCollection } from '../other/helpers';
 import { storeLocalData } from '../other/asyncStorageWrapper';
 
 import type { List, ValidListManagementModalType, StyledModalButton } from '../types/types';
@@ -149,18 +149,18 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
 	}
 
 	function handleCreateOnPress() {
-		setListsArr(prevState => {
-            if (!nameInput) {
-                return prevState;
-            }
+		if (!nameInput) {
+			return;
+		}
 
+		setListsArr(prevState => {
             let nextId = getNextIdFromCollection(prevState);
 
             let newState = [...prevState];
             newState.push({
                 id: nextId,
                 name: nameInput,
-                tags: [],
+                tags: [{id: 1, name: 'On Sale', colour: 'red'}],
                 items: [],
                 isJoined: false,
                 inviteCode: ''
@@ -185,7 +185,7 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
                 return prevState;
             }
 
-            let index = findIndexOfListById(prevState, list.id);
+            let index = findIndexOfItemById(prevState, list.id);
 
             if (index == -1) {
                 console.error(`=== ERROR ===\nNo list with id=${list.id}.`);
@@ -209,7 +209,7 @@ export function ListManagementModal({ isVisible, type, list, setListsArr, closeM
                 return prevState;
             }
 
-            let index = findIndexOfListById(prevState, list.id);
+            let index = findIndexOfItemById(prevState, list.id);
 
             if (index == -1) {
                 console.error(`=== ERROR ===\nNo list with id=${list.id}.`);

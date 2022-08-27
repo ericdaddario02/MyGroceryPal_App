@@ -32,7 +32,7 @@ export interface ListItem {
 
 export type StackParamList =  {
 	MyLists: undefined;
-	List: {listName: string, listTags: ListTag[], listItems: ListItem[], setListsArr: React.Dispatch<React.SetStateAction<List[]>>}
+	List: {list: List, setListsArr: React.Dispatch<React.SetStateAction<List[]>>}
 };
 
 export type MyListsScreenProps = NativeStackScreenProps<StackParamList, 'MyLists'>;

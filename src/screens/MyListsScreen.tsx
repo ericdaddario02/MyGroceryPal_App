@@ -90,13 +90,8 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
 		setListManagementModalVisible(false);
 	}
 
-	function handleListCardPress(listName: string, listTags: ListTag[], listItems: ListItem[]) {
-		navigation.navigate('List', {
-			listName,
-			listTags,
-			listItems,
-			setListsArr
-		});
+	function handleListCardPress(list: List) {
+		navigation.navigate('List', {list, setListsArr});
 	}
 
 
@@ -104,7 +99,7 @@ function MyListsScreen({ navigation, route }: MyListsScreenProps) {
         <View style={styles.mainContainer}>
             <ScrollView style={styles.mainScrollViewContainer} contentContainerStyle={styles.mainScrollViewContentContainer}>
                 {listsArr.map((list, index) =>
-                    <TouchableOpacity key={list.id} style={styles.listCardTouchable} activeOpacity={0.4} onPress={() => handleListCardPress(list.name, list.tags, list.items)}>
+                    <TouchableOpacity key={list.id} style={styles.listCardTouchable} activeOpacity={0.4} onPress={() => handleListCardPress(list)}>
                         <View style={styles.listCard}>
                             <Menu 
                                 button={<MenuButton />}

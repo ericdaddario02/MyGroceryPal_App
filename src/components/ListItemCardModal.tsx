@@ -10,10 +10,13 @@ import { appColours, textColours } from '../constants/colours';
 import { xIcon } from '../constants/images';
 
 import type { List, ListItem, ListTag, StyledModalButton } from '../types/types';
+import { findAllNewTags, findIndexOfItemById, getNextIdFromCollection } from '../other/helpers';
+import { storeLocalData } from '../other/asyncStorageWrapper';
 
 
 interface ListItemCardModalProps {
 	isVisible: boolean,
+	list: List,
 	listItem: ListItem | null,
 	listTags: ListTag[],
 	closeModal: Function,
@@ -29,7 +32,7 @@ interface ListItemCardModalProps {
  * **Note**: If `listItem` is null, the modal will be in 'Add New Item' mode.  
  * If `listItem` is not null, the modal will be in 'Edit Item' mode.
  */
-export function ListItemCardModal({ isVisible, listItem, listTags, closeModal, stateSetters }: ListItemCardModalProps) {
+export function ListItemCardModal({ isVisible, list, listItem, listTags, closeModal, stateSetters }: ListItemCardModalProps) {
 	const [ nameInput, setNameInput ] = useState<string>('');
 	const [ additionalNotesInput, setAdditionalNotesInput ] = useState<string>('');
 	const [ priceInput, setPriceInput ] = useState<string>('');
@@ -73,7 +76,58 @@ export function ListItemCardModal({ isVisible, listItem, listTags, closeModal, s
 	}
 
 	function handleAddOnPress() {
-		console.log('add!!!');
+		if (!nameInput) {
+			return;
+		}
+
+		stateSetters.setListsArr(prevState => {
+			let newState = [...prevState];
+
+			let currentListIndex = findIndexOfItemById(newState, list.id);
+			let currentList = {...newState[currentListIndex]};
+
+			// Must deep-copy the list object to avoid duplicate pushes/state updates.
+			currentList.items = [...currentList.items];
+			currentList.tags = [...currentList.tags];
+
+			let nextListItemId = getNextIdFromCollection(currentList.items);
+
+			let newListItem: ListItem = {
+				id: nextListItemId,
+				name: nameInput,
+				additionalNotes: additionalNotesInput,
+				price: priceInput,
+				tags: listItemTags
+			};
+
+			currentList.items.push(newListItem);
+
+			stateSetters.setListItems(prevState => {
+				let newState = [...prevState];
+				newState.push(newListItem);
+
+				return newState;
+			});
+
+			let allNewTags = findAllNewTags(currentList.tags, listItemTags);
+
+			currentList.tags.push(...allNewTags);
+
+			stateSetters.setListTags(prevState => {
+				let newState = [...prevState];
+				newState.push(...allNewTags);
+
+				return newState;
+			});
+
+			newState[currentListIndex] = currentList;
+
+			storeLocalData('listsArr', newState);
+
+			return newState;
+		});
+
+		closeModal();
 	}
 
 	function handleSaveOnPress() {

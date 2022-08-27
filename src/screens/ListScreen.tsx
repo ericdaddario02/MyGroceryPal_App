@@ -12,11 +12,11 @@ import type { ListScreenProps, ListTag, ListItem } from '../types/types';
 
 
 function ListScreen({ navigation, route }: ListScreenProps) {
-	const [ listItems, setListItems ] = useState<ListItem[]>(route.params.listItems);
-	const [ listTags, setListTags ] = useState<ListTag[]>(route.params.listTags);
+	const [ listItems, setListItems ] = useState<ListItem[]>(route.params.list.items);
+	const [ listTags, setListTags ] = useState<ListTag[]>(route.params.list.tags);
 
 	const [ isFilterPressed, setIsFilterPressed ] = useState<boolean>(false);
-	const [ activeFilters, setActiveFilters ] = useState<boolean[]>(new Array(route.params.listTags.length).fill(false));
+	const [ activeFilters, setActiveFilters ] = useState<boolean[]>(new Array(route.params.list.tags.length).fill(false));
 	const [ listItemCardModalVisible, setListItemCardModalVisible ] = useState<boolean>(false);
 	const [ listItemCardModalListItem, setListItemCardModalListItem ] = useState<ListItem|null>(null);
 
@@ -125,16 +125,15 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				</View>
 			</Animated.View>
 
-            {
-                !activeFilters.every(flag => flag == false) &&
-                <View style={styles.activeFiltersContainer}>
-                    {listTags.map((tag, index) => activeFilters[index] &&
-                        <View key={tag.id} style={styles.activeFilter}>
-                            <View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
-                            <Text style={styles.activeFilterName}>{tag.name}</Text>
-                        </View>
-                    )}
-                </View>
+            {!activeFilters.every(flag => flag == false) &&
+				<View style={styles.activeFiltersContainer}>
+					{listTags.map((tag, index) => activeFilters[index] &&
+						<View key={tag.id} style={styles.activeFilter}>
+							<View style={[styles.activeFilterCircle, {backgroundColor: tag.colour}]}/>
+							<Text style={styles.activeFilterName}>{tag.name}</Text>
+						</View>
+					)}
+				</View>
             }
 
 			<ScrollView contentContainerStyle={[styles.allListItemsContainer, {paddingTop: activeFilters.every(flag => flag == false) ? vs(15) : vs(5)}]}>
@@ -187,6 +186,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 			<ListItemCardModal
 				isVisible={listItemCardModalVisible}
+				list={route.params.list}
 				listItem={listItemCardModalListItem}
 				listTags={listTags}
 				closeModal={hideListItemCardModal}
