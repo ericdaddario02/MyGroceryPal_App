@@ -6,6 +6,7 @@ import { s as hs, vs } from 'react-native-size-matters';
 
 import { ResponsiveText as Text } from './src/components/ResponsiveText';
 import { appFonts } from './src/constants/fonts';
+import { appColours } from './src/constants/colours';
 import { backIcon } from './src/constants/images';
 
 import type { StackParamList } from './src/types/types';
@@ -36,16 +37,16 @@ function App() {
 					name="MyLists"
 					component={MyListsScreen}
 					options={{
-						// header: () => (
-						// 	<View style={{ justifyContent: 'center', height: vs(65), paddingHorizontal: 20, backgroundColor: 'white', borderBottomColor: appColours.dividerColour, borderBottomWidth: 1 }}>
-						// 		<Text style={{ fontFamily: appFonts.semibold, fontSize: 32, color: 'black' }}>My Lists</Text>
-						// 	</View>
-						// ),
-						headerTitle: () => (
-							<View style={styles.headerTitleContainer}>
+						header: () => (
+							<View style={styles.headerContainer}>
 								<Text style={styles.headerTitleText}>My Lists</Text>
 							</View>
 						),
+						// headerTitle: () => (
+						// 	<View style={styles.headerTitleContainer}>
+						// 		<Text style={styles.headerTitleText}>My Lists</Text>
+						// 	</View>
+						// ),
 					}}
 				/>
 
@@ -53,22 +54,26 @@ function App() {
 					name="List"
 					component={ListScreen}
 					options={({ navigation, route }) => ({
-						// header: () => (
-						// 	<View style={{ justifyContent: 'center', height: vs(65), paddingHorizontal: 20, backgroundColor: 'white', borderBottomColor: appColours.dividerColour, borderBottomWidth: 1}}>
-						// 		<Text style={{ fontFamily: appFonts.semibold, fontSize: 32, color: 'black' }}>{route.params.listName}</Text>
-						// 	</View>
-						// ),
-						headerTitle: () => (
-							<View style={styles.headerTitleContainerMaxWidth}>
-								<Text adjustsFontSizeToFit style={styles.headerTitleText}>{route.params.listName}</Text>
+						header: () => (
+							<View style={styles.headerContainer}>
+								<TouchableOpacity activeOpacity={0.4} onPress={() => navigation.goBack()} style={styles.headerLeftBackButtonTouchable}>
+									<Image source={backIcon} resizeMode='contain' style={styles.headerLeftBackButtonIcon}/>
+								</TouchableOpacity>
+
+								<Text style={styles.headerTitleText}>{route.params.listName}</Text>
 							</View>
 						),
-						headerBackVisible: false,
-						headerLeft: () => (
-							<TouchableOpacity activeOpacity={0.4} onPress={() => navigation.goBack()} style={styles.headerLeftBackButtonTouchable}>
-								<Image source={backIcon} resizeMode='contain' style={styles.headerLeftBackButtonIcon}/>
-							</TouchableOpacity>
-						),
+						// headerTitle: () => (
+						// 	<View style={styles.headerTitleContainerMaxWidth}>
+						// 		<Text adjustsFontSizeToFit style={styles.headerTitleText}>{route.params.listName}</Text>
+						// 	</View>
+						// ),
+						// headerBackVisible: false,
+						// headerLeft: () => (
+						// 	<TouchableOpacity activeOpacity={0.4} onPress={() => navigation.goBack()} style={styles.headerLeftBackButtonTouchable}>
+						// 		<Image source={backIcon} resizeMode='contain' style={styles.headerLeftBackButtonIcon}/>
+						// 	</TouchableOpacity>
+						// ),
 					})}
 				/>
 
@@ -79,6 +84,15 @@ function App() {
 
 
 const styles = StyleSheet.create({
+	headerContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		height: vs(65),
+		paddingHorizontal: hs(15),
+		borderBottomColor: appColours.dividerColour,
+		borderBottomWidth: 1,
+		backgroundColor: 'white'
+	},
 	headerTitleContainer: {
 		justifyContent: 'center',
 		height: vs(65)
