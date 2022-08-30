@@ -91,7 +91,6 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 			currentList.tags = [...currentList.tags];
 
 			let nextListItemId = getNextIdFromCollection(currentList.items);
-
 			let newListItem: ListItem = {
 				id: nextListItemId,
 				name: nameInput,
@@ -99,30 +98,31 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 				price: priceInput,
 				tags: listItemTags
 			};
-
 			currentList.items.push(newListItem);
 
-			stateSetters.setListItems(prevState => {
-				let newState = [...prevState];
-				newState.push(newListItem);
-
-				return newState;
-			});
-
 			let allNewTags = findAllNewTags(currentList.tags, listItemTags);
-
 			currentList.tags.push(...allNewTags);
-
-			stateSetters.setListTags(prevState => {
-				let newState = [...prevState];
-				newState.push(...allNewTags);
-
-				return newState;
-			});
 
 			newState[currentListIndex] = currentList;
 
 			storeLocalData('listsArr', newState);
+
+			// setTimeout causes these states to be updated after the listsArr state of the MyListsScreen, to avoid a thrown error/warning.
+			setTimeout(() => {
+				stateSetters.setListItems(prevState => {
+					let newState = [...prevState];
+					newState.push(newListItem!);
+	
+					return newState;
+				});
+
+				stateSetters.setListTags(prevState => {
+					let newState = [...prevState];
+					newState.push(...allNewTags);
+	
+					return newState;
+				});
+			}, 0);
 
 			return newState;
 		});
@@ -131,11 +131,97 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 	}
 
 	function handleSaveOnPress() {
-		console.log('save!!!');
+		if (!nameInput || !listItem) {
+			return;
+		}
+
+		stateSetters.setListsArr(prevState => {
+			let newState = [...prevState];
+
+			let currentListIndex = findIndexOfItemById(newState, list.id);
+			let currentList = {...newState[currentListIndex]};
+
+			// Must deep-copy the list object to avoid duplicate pushes/state updates.
+			currentList.items = [...currentList.items];
+			currentList.tags = [...currentList.tags];
+
+			let currentListItemIndex = findIndexOfItemById(currentList.items, listItem.id);
+			let currentListItem = {...currentList.items[currentListItemIndex]};
+
+			currentListItem.name = nameInput;
+			currentListItem.additionalNotes = additionalNotesInput;
+			currentListItem.price = priceInput;
+			currentListItem.tags = listItemTags;
+
+			currentList.items[currentListItemIndex] = currentListItem;
+
+			let allNewTags = findAllNewTags(currentList.tags, listItemTags);
+			currentList.tags.push(...allNewTags);
+
+			newState[currentListIndex] = currentList;
+			
+			storeLocalData('listsArr', newState);
+
+			// setTimeout causes these states to be updated after the listsArr state of the MyListsScreen, to avoid a thrown error/warning.
+			setTimeout(() => {
+				stateSetters.setListItems(prevState => {
+					let newState = [...prevState];
+					newState[currentListItemIndex] = currentListItem;
+	
+					return newState;
+				});
+
+				stateSetters.setListTags(prevState => {
+					let newState = [...prevState];
+					newState.push(...allNewTags);
+	
+					return newState;
+				});
+			}, 0);
+
+			return newState;
+		});
+
+		closeModal();
 	}
 
 	function handleDeleteOnPress() {
-		console.log('delete!!!');
+		if (!nameInput || !listItem) {
+			return;
+		}
+
+		stateSetters.setListsArr(prevState => {
+			let newState = [...prevState];
+
+			let currentListIndex = findIndexOfItemById(newState, list.id);
+			let currentList = {...newState[currentListIndex]};
+
+			// Must deep-copy the list object to avoid duplicate pushes/state updates.
+			currentList.items = [...currentList.items];
+			currentList.tags = [...currentList.tags];
+
+			let currentListItemIndex = findIndexOfItemById(currentList.items, listItem.id);
+			currentList.items.splice(currentListItemIndex, 1);
+
+			newState[currentListIndex] = currentList;
+			
+			storeLocalData('listsArr', newState);
+
+			// setTimeout causes these states to be updated after the listsArr state of the MyListsScreen, to avoid a thrown error/warning.
+			setTimeout(() => {
+				stateSetters.setListItems(prevState => {
+					let newState = [...prevState];
+					console.log(newState);
+					newState.splice(currentListItemIndex, 1);
+	
+					return newState;
+				});
+			}, 0);
+
+			return newState;
+		});
+
+		closeModal();
 	}
 
     function handleAddTag(tagName: string) {
