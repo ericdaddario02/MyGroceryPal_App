@@ -10,7 +10,7 @@ import { appColours, textColours } from '../constants/colours';
 import { xIcon } from '../constants/images';
 
 import type { List, ListItem, ListTag, StyledModalButton } from '../types/types';
-import { findAllNewTags, findIndexOfItemById, getNextIdFromCollection } from '../other/helpers';
+import { findAllNewTags, findIndexOfItemById, generateRandomColour, getNextIdFromCollection } from '../other/helpers';
 import { storeLocalData } from '../other/asyncStorageWrapper';
 
 
@@ -47,7 +47,7 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 	};
 
 	useEffect(() => {
-		if (listItem) {
+		if (isVisible && listItem) {
 			setNameInput(listItem.name);
 			setAdditionalNotesInput(listItem.additionalNotes ?? '');
 			setPriceInput(listItem.price ?? '');
@@ -55,6 +55,18 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 			setListItemTags(listItem.tags);
 		}
 	}, [isVisible]);
+
+	useEffect(() => {
+		if (isOnSaleChecked && !(listItemTags[0]?.name == 'On Sale')) {
+			let tempArr = [...listItemTags];
+			tempArr.unshift(listTags[0]);
+			setListItemTags(tempArr);
+		} else if (!isOnSaleChecked && listItemTags[0]?.name == 'On Sale') {
+			let tempArr = [...listItemTags];
+			tempArr.shift();
+			setListItemTags(tempArr);
+		}
+	}, [isOnSaleChecked]);
 
 	function isListItemOnSale(listItem: ListItem) {
 		for (let tag of listItem.tags) {
@@ -211,7 +223,6 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 			setTimeout(() => {
 				stateSetters.setListItems(prevState => {
 					let newState = [...prevState];
-					console.log(newState);
 					newState.splice(currentListItemIndex, 1);
 	
 					return newState;
@@ -226,8 +237,34 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 
     function handleAddTag(tagName: string) {
         if (!tagName) {
-
+			return;
         }
+
+		let currentListItemTagWithSameName = listItemTags.filter(tag => tag.name.toLowerCase() == tagName.toLowerCase())[0];
+
+		if (currentListItemTagWithSameName) {
+			return;
+		}
+
+		let listTagWithSameName = listTags.filter(tag => tag.name.toLowerCase() == tagName.toLowerCase())[0];
+
+		if (listTagWithSameName) {  // Existing tag
+			let tempArr = [...listItemTags];
+			tempArr.push(listTagWithSameName);
+			setListItemTags(tempArr);
+		} else {  // New tag
+			let nextTagId = getNextIdFromCollection([...listTags, ...listItemTags]);
+
+			let newTag: ListTag = {
+				id: nextTagId,
+				name: tagName,
+				colour: generateRandomColour()
+			};
+
+			let tempArr = [...listItemTags];
+			tempArr.push(newTag);
+			setListItemTags(tempArr);
+		}
     }
 
 	function handleTagRemoveOnPress(tagIndex: number) {
@@ -307,6 +344,7 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 						style={styles.input}
 						value={addTagInput}
 						onChangeText={setAddTagInput}
+						onSubmitEditing={() => handleAddTag(addTagInput.trim())}
 					/>
 				</View>
 

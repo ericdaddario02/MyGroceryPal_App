@@ -30,7 +30,7 @@ export function findIndexOfItemById(collection: {id: number}[], id: number) {
 }
 
 /**
- * Return an array of all new tags
+ * Returns an array of all new tags
  * --- new as in not currently in the set of all tags for a list ---
  * when adding or updating a list item.
  */
@@ -46,4 +46,13 @@ export function findAllNewTags(listTags: ListTag[], listItemTags: ListTag[]) {
 	}
 
 	return newTags;
+}
+
+/**
+ * Returns a hex code string for a random colour.
+ */
+export function generateRandomColour() {
+	let randomColour = '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
+
+	return randomColour;
 }
