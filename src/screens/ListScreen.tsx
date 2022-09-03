@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { Animated, Easing, ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { s as hs, vs } from 'react-native-size-matters';
 
@@ -9,6 +9,18 @@ import { appFonts } from '../constants/fonts';
 import { dropdownArrowIcon, plusIcon } from '../constants/images';
 
 import type { ListScreenProps, ListTag, ListItem } from '../types/types';
+
+
+interface ListItemCardsAnimationValues {
+	[id: number]: {
+		defaultCardHeight: number,
+		cardHeight: Animated.Value,
+		cardBottomMargin: number|Animated.AnimatedInterpolation,
+		cardBulletOpacity: number|Animated.AnimatedInterpolation,
+		cardBorderWidth: number|Animated.AnimatedInterpolation,
+		visible: boolean, 
+	}
+}
 
 
 function ListScreen({ navigation, route }: ListScreenProps) {
@@ -28,35 +40,122 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 		};
 	}, []);
 
+	const listItemCardsAnimationValues = useMemo(() => {
+		let valuesObj: ListItemCardsAnimationValues = {};
+
+		for (let item of route.params.list.items) {
+			valuesObj[item.id] = {
+				defaultCardHeight: 0,
+				cardHeight: new Animated.Value(0),
+				cardBottomMargin: vs(12),
+				cardBulletOpacity: 1,
+				cardBorderWidth: 3,
+				visible: true
+			};
+		}
+
+		return valuesObj;
+	}, []);
+
+	let isPerformingAnimation = useMemo(() => false, []);
+
+	const isFirstRunFilterPressedUseEffect = useRef(true);
+
 	useEffect(() => {
+		if (isFirstRunFilterPressedUseEffect.current) {
+			isFirstRunFilterPressedUseEffect.current = false;
+			return;
+		}
+
+		isPerformingAnimation = true;
+
 		if (isFilterPressed) {
 			Animated.timing(filterAnimationValues.filterIconRotationValue, {
 				toValue: 1,
 				duration: 150,
 				easing: Easing.linear,
 				useNativeDriver: true
-			}).start();
+			}).start(({ finished }) => {
+				if (finished) {
+					isPerformingAnimation = false;
+				}
+			});
 			Animated.timing(filterAnimationValues.filterTagsContainerHeight, {
 				toValue: filterAnimationValues.tagsHeight,
 				duration: 150,
 				easing: Easing.bezier(0,.77,.82,.99),
 				useNativeDriver: false
-			}).start();
+			}).start(({ finished }) => {
+				if (finished) {
+					isPerformingAnimation = false;
+				}
+			});
 		} else {
 			Animated.timing(filterAnimationValues.filterIconRotationValue, {
 				toValue: 0,
 				duration: 150,
 				easing: Easing.linear,
 				useNativeDriver: true
-			}).start();
+			}).start(({ finished }) => {
+				if (finished) {
+					isPerformingAnimation = false;
+				}
+			});
 			Animated.timing(filterAnimationValues.filterTagsContainerHeight, {
 				toValue: 0,
 				duration: 150,
 				easing: Easing.bezier(0,.77,.82,.99),
 				useNativeDriver: false
-			}).start();
+			}).start(({ finished }) => {
+				if (finished) {
+					isPerformingAnimation = false;
+				}
+			});
 		}
 	}, [isFilterPressed]);
+
+	const isFirstRunActiveFiltersUseEffect = useRef(true);
+
+	useEffect(() => {
+		if (isFirstRunActiveFiltersUseEffect.current) {
+			isFirstRunActiveFiltersUseEffect.current = false;
+			return;
+		}
+
+		isPerformingAnimation = true;
+
+		for (let [index, listItem] of listItems.entries()) {
+			let animationValues = listItemCardsAnimationValues[listItem.id];
+
+			if (animationValues.visible && !doesListItemPassActiveFilters(listItem)) {  // Visible item does not pass new set of filters.
+				Animated.timing(animationValues.cardHeight, {
+					toValue: 0,
+					duration: 200,
+					easing: Easing.bezier(.71,.4,.88,.53),
+					useNativeDriver: false
+				}).start(({ finished }) => {
+					if (finished && index == listItems.length - 1) {
+						isPerformingAnimation = false;
+					}
+				});
+
+				animationValues.visible = false;
+			} else if (!animationValues.visible && doesListItemPassActiveFilters(listItem)) {  // Invisible item passes new set of filters.
+				Animated.timing(animationValues.cardHeight, {
+					toValue: animationValues.defaultCardHeight,
+					duration: 200,
+					easing: Easing.bezier(.71,.4,.88,.53),
+					useNativeDriver: false
+				}).start(({ finished }) => {
+					if (finished && index == listItems.length - 1) {
+						isPerformingAnimation = false;
+					}
+				});
+
+				animationValues.visible = true;
+			}
+		}
+	}, [activeFilters]);
 
 	const filterIconRotationDeg = filterAnimationValues.filterIconRotationValue.interpolate({
 		inputRange: [0, 1],
@@ -88,6 +187,29 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 	function hideListItemCardModal() {
 		setListItemCardModalVisible(false);
+	}
+
+	function handleListItemCardHeightChange(listItem: ListItem, height: number) {
+		let animationValues = listItemCardsAnimationValues[listItem.id];
+
+		if (height != 0  && animationValues.visible && !isPerformingAnimation) {
+			height += 6;  // Adds the height of the list card border.
+
+			animationValues.defaultCardHeight = height;
+			animationValues.cardHeight.setValue(height);
+			animationValues.cardBottomMargin = animationValues.cardHeight.interpolate({
+				inputRange: [0, height],
+				outputRange: [0, vs(12)]
+			});
+			animationValues.cardBulletOpacity = animationValues.cardHeight.interpolate({
+				inputRange: [0, height],
+				outputRange: [0, 1]
+			});
+			animationValues.cardBorderWidth = animationValues.cardHeight.interpolate({
+				inputRange: [0, 10, height],
+				outputRange: [0, 3, 3]
+			});
+		}
 	}
 
 	function doesListItemPassActiveFilters(listItem: ListItem) {
@@ -138,39 +260,47 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 			<ScrollView contentContainerStyle={[styles.allListItemsContainer, {paddingTop: activeFilters.every(flag => flag == false) ? vs(15) : vs(5)}]}>
 				{listItems.map((item, index) =>
-					doesListItemPassActiveFilters(item) &&
 					<View key={item.id} style={styles.listItemCardRow}>
-						<View style={styles.listItemCardLeftBullet}/>
-						<View style={styles.listItemCard}>
-							<TouchableOpacity activeOpacity={0.5} style={styles.listItemCardTouchable} onPress={() => showListItemCardModal(item)}>
-								<View style={styles.listItemCardTopRow}>
-									<Text style={styles.listItemCardName}>{item.name}</Text>
-									{item.price &&
-										<Text style={styles.listItemCardPrice}>{'$' + item.price}</Text>
+						<Animated.View style={[styles.listItemCardLeftBullet, {opacity: listItemCardsAnimationValues[item.id].cardBulletOpacity}]}/>
+
+						<Animated.View 
+							style={[styles.listItemCard, {
+								marginBottom: listItemCardsAnimationValues[item.id].cardBottomMargin,
+								height: listItemCardsAnimationValues[item.id].defaultCardHeight != 0 ? listItemCardsAnimationValues[item.id].cardHeight : undefined,
+								borderWidth: listItemCardsAnimationValues[item.id].cardBorderWidth
+							}]}
+						>
+							<View style={styles.listItemCardInnerView} onLayout={({ nativeEvent }) => handleListItemCardHeightChange(item, nativeEvent.layout.height)}>
+								<TouchableOpacity activeOpacity={0.5} style={styles.listItemCardTouchable} onPress={() => showListItemCardModal(item)}>
+									<View style={styles.listItemCardTopRow}>
+										<Text style={styles.listItemCardName}>{item.name}</Text>
+										{item.price &&
+											<Text style={styles.listItemCardPrice}>{'$' + item.price}</Text>
+										}
+									</View>
+
+									{item.additionalNotes &&
+										<View style={styles.listItemCardAdditionalNotesContainer}>
+											<Text style={styles.listItemCardAdditionalNotes}>{item.additionalNotes}</Text>
+										</View>
 									}
-								</View>
 
-								{item.additionalNotes &&
-									<View style={styles.listItemCardAdditionalNotesContainer}>
-										<Text style={styles.listItemCardAdditionalNotes}>{item.additionalNotes}</Text>
-									</View>
-								}
-
-								{item.tags.length > 0
-									?
-									<View style={styles.listItemCardTagsContainer}>
-										{item.tags.map(tag => 
-											<View key={tag.id} style={styles.listItemCardTag}>
-												<View style={[styles.listItemCardTagCircle, {backgroundColor: tag.colour}]}/>
-												<Text style={styles.listItemCardTagName}>{tag.name}</Text>
-											</View>
-										)}
-									</View>
-									:
-									<View style={styles.listItemCardNoTagsBottomPadding}/>
-								}
-							</TouchableOpacity>
-						</View>
+									{item.tags.length > 0
+										?
+										<View style={styles.listItemCardTagsContainer}>
+											{item.tags.map(tag => 
+												<View key={tag.id} style={styles.listItemCardTag}>
+													<View style={[styles.listItemCardTagCircle, {backgroundColor: tag.colour}]}/>
+													<Text style={styles.listItemCardTagName}>{tag.name}</Text>
+												</View>
+											)}
+										</View>
+										:
+										<View style={styles.listItemCardNoTagsBottomPadding}/>
+									}
+								</TouchableOpacity>
+							</View>
+						</Animated.View>
 					</View>
 				)}
 			</ScrollView>
@@ -314,7 +444,6 @@ const styles = StyleSheet.create({
         paddingBottom: vs(60)
 	},
 	listItemCardRow: {
-		marginBottom: vs(12),
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
@@ -326,9 +455,12 @@ const styles = StyleSheet.create({
 		marginRight: hs(10)
 	},
 	listItemCard: {
-		borderWidth: 3,
 		borderColor: appColours.grey,
 		borderRadius: 10,
+		flex: 1,
+		overflow: 'scroll'
+	},
+	listItemCardInnerView: {
 		flex: 1
 	},
 	listItemCardTouchable: {
