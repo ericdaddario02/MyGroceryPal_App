@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { s as hs, vs } from 'react-native-size-matters';
 
@@ -7,7 +7,7 @@ import { StyledModal } from './StyledModal';
 import { ResponsiveText as Text } from './ResponsiveText';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from '../constants/colours';
-import { xIcon } from '../constants/images';
+import { plusIcon, xIcon } from '../constants/images';
 
 import type { List, ListItem, ListTag, StyledModalButton } from '../types/types';
 import { findAllNewTags, findIndexOfItemById, generateRandomColour, getNextIdFromCollection } from '../other/helpers';
@@ -39,6 +39,8 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 	const [ isOnSaleChecked, setIsOnSaleChecked ] = useState<boolean>(false);
 	const [ addTagInput, setAddTagInput ] = useState<string>('');
 	const [ listItemTags, setListItemTags ] = useState<ListTag[]>([]);
+	
+	const [ addTagSuggestionsWidth, setAddTagSuggestionsWidth ] = useState<number>(0);
 
 	const modalButtons: {add: StyledModalButton, save: StyledModalButton, delete: StyledModalButton} = {
 		add: {text: 'Add', onPress: handleAddOnPress},
@@ -265,12 +267,25 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 			tempArr.push(newTag);
 			setListItemTags(tempArr);
 		}
+
+		setAddTagInput('');
     }
 
 	function handleTagRemoveOnPress(tagIndex: number) {
 		let tempArr = [...listItemTags];
 		tempArr.splice(tagIndex, 1);
 		setListItemTags(tempArr);
+	}
+
+	function shouldTagBeSuggested(tag: ListTag) {
+		if (addTagInput == '' || tag.name == 'On Sale') {
+			return false;
+		}
+
+		let isSubstring = tag.name.toLowerCase().includes(addTagInput.toLowerCase().trim())
+		let currentListItemTagWithSameName = listItemTags.filter(listItemTag => listItemTag.name.toLowerCase() == tag.name.toLowerCase())[0];
+
+		return isSubstring && !currentListItemTagWithSameName;
 	}
 
 
@@ -341,17 +356,45 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 				<View style={styles.row}>
 					<Text style={styles.inputPrompt}>Add Tag:</Text>
 					<TextInput
-						style={styles.input}
+						onLayout={({ nativeEvent }) => setAddTagSuggestionsWidth(nativeEvent.layout.width)}
+						style={styles.addTagInput}
 						value={addTagInput}
 						onChangeText={setAddTagInput}
 						onSubmitEditing={() => handleAddTag(addTagInput.trim())}
 					/>
+					
+					<View style={[styles.addTagButtonContainer, { backgroundColor: addTagInput.length > 0 ? '#D9D9D9' : '#F0F0F0' }]}>
+						{addTagInput.length > 0 &&
+							<TouchableOpacity activeOpacity={0.4} style={styles.addTagButtonTouchable} onPress={() => handleAddTag(addTagInput.trim())}>
+								<Image source={plusIcon} style={styles.addTagButtonIcon}/>
+							</TouchableOpacity>
+						}
+					</View>
+
+					{listTags.filter(tag => shouldTagBeSuggested(tag)).length > 0 &&
+						<View style={[styles.addTagSuggestionsContainer, { width: addTagSuggestionsWidth }]}>
+							<View style={styles.divider}/>
+
+							<ScrollView keyboardShouldPersistTaps='handled'>
+								{listTags.map((tag) =>
+									shouldTagBeSuggested(tag) &&
+									<View key={tag.id} style={styles.addTagSuggestionBackgroundView}>
+										<TouchableOpacity activeOpacity={0.7} style={styles.addTagSuggestionTouchable} onPress={() => handleAddTag(tag.name)}>
+											<View style={[styles.tagCircle, { backgroundColor: tag.colour, marginRight: hs(6) }]}/>
+											<Text adjustsFontSizeToFit style={styles.addTagSuggestionText}>{tag.name}</Text>
+										</TouchableOpacity>
+									</View>
+								)}
+							</ScrollView>
+						</View>
+					}
+					
 				</View>
 
 				<View style={styles.tagsContainer}>
 					{listItemTags.map((tag, index) =>
 						<View key={tag.id} style={styles.tag}>
-							<View style={[styles.tagCircle, {backgroundColor: tag.colour}]}/>
+							<View style={[styles.tagCircle, { backgroundColor: tag.colour }]}/>
 							<Text style={styles.tagName}>{tag.name}</Text>
 							<TouchableOpacity activeOpacity={0.4} style={styles.tagXIconTouchable} onPress={() => handleTagRemoveOnPress(index)}>
 								<Image source={xIcon} style={styles.tagXIcon}/>
@@ -427,7 +470,7 @@ const styles = StyleSheet.create({
 	},
 	tagsContainer: {
 		flexDirection: 'row',
-		paddingTop: vs(12),
+		paddingTop: vs(15),
 		flexWrap: 'wrap'
 	},
 	tag: {
@@ -462,5 +505,66 @@ const styles = StyleSheet.create({
 		width: hs(7),
 		height: hs(7),
 		tintColor: textColours.grey
+	},
+	divider: {
+		height: 1,
+		width: '100%',
+		backgroundColor: appColours.dividerColour
+	},
+	addTagInput: {
+		backgroundColor: '#F0F0F0',
+		borderBottomLeftRadius: 5,
+		borderTopLeftRadius: 5,
+		height: vs(27),
+		flex: 1,
+		paddingVertical: 0,
+		paddingHorizontal: hs(6),
+		fontFamily: appFonts.regular,
+		fontSize: 15,
+		color: textColours.grey
+	},
+	addTagButtonContainer: {
+		height: vs(27),
+		width: hs(32),
+		borderTopRightRadius: 5,
+		borderBottomRightRadius: 5
+	},
+	addTagButtonTouchable: {
+		height: '100%',
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	addTagButtonIcon: {
+		height: '65%',
+		aspectRatio: 1,
+		tintColor: '#3F3F3F'
+	},
+	addTagSuggestionsContainer: {
+		position: 'absolute',
+		maxHeight: vs(100), 
+		top: vs(24),
+		right: hs(32),
+		zIndex: 1,
+		paddingTop: vs(3),
+		backgroundColor: '#F0F0F0',
+		borderBottomLeftRadius: 5,
+		borderBottomRightRadius: 5,
+		overflow: 'hidden'
+	},
+	addTagSuggestionBackgroundView: {
+		backgroundColor: appColours.blue
+	},
+	addTagSuggestionTouchable: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#F0F0F0',
+		paddingHorizontal: hs(6),
+		paddingVertical: vs(4)
+	},
+	addTagSuggestionText: {
+		fontSize: 14,
+		fontFamily: appFonts.regular,
+		color: '#535353'
 	}
 });
