@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, Animated } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { s as hs, vs } from 'react-native-size-matters';
 
@@ -8,10 +8,10 @@ import { ResponsiveText as Text } from './ResponsiveText';
 import { appFonts } from '../constants/fonts';
 import { appColours, textColours } from '../constants/colours';
 import { plusIcon, xIcon } from '../constants/images';
-
-import type { List, ListItem, ListTag, StyledModalButton } from '../types/types';
-import { findAllNewTags, findIndexOfItemById, generateRandomColour, getNextIdFromCollection } from '../other/helpers';
+import { findAllNewItems, findIndexOfItemById, generateRandomColour, getNextIdFromCollection } from '../other/helpers';
 import { storeLocalData } from '../other/asyncStorageWrapper';
+
+import type { List, ListItem, ListTag, StyledModalButton, ListItemCardsAnimationValues } from '../types/types';
 
 
 interface ListItemCardModalProps {
@@ -24,7 +24,8 @@ interface ListItemCardModalProps {
         setListsArr: React.Dispatch<React.SetStateAction<List[]>>,
         setListItems: React.Dispatch<React.SetStateAction<ListItem[]>>,
         setListTags: React.Dispatch<React.SetStateAction<ListTag[]>>
-    }
+    },
+	listItemCardsAnimationValues: ListItemCardsAnimationValues
 }
 
 
@@ -32,7 +33,7 @@ interface ListItemCardModalProps {
  * **Note**: If `listItem` is null, the modal will be in 'Add New Item' mode.  
  * If `listItem` is not null, the modal will be in 'Edit Item' mode.
  */
-export function ListItemCardModal({ isVisible, list, listItem, listTags, closeModal, stateSetters }: ListItemCardModalProps) {
+export function ListItemCardModal({ isVisible, list, listItem, listTags, closeModal, stateSetters, listItemCardsAnimationValues }: ListItemCardModalProps) {
 	const [ nameInput, setNameInput ] = useState<string>('');
 	const [ additionalNotesInput, setAdditionalNotesInput ] = useState<string>('');
 	const [ priceInput, setPriceInput ] = useState<string>('');
@@ -114,7 +115,17 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 			};
 			currentList.items.push(newListItem);
 
-			let allNewTags = findAllNewTags(currentList.tags, listItemTags);
+			listItemCardsAnimationValues[nextListItemId] = {
+				defaultCardHeight: 0,
+				cardHeight: new Animated.Value(0),
+				cardBottomMargin: vs(12),
+				cardBulletHeight: vs(3),
+				cardBorderWidth: 3,
+				cardOpacity: 1,
+				visible: true
+			};
+
+			let allNewTags = findAllNewItems(currentList.tags, listItemTags);
 			currentList.tags.push(...allNewTags);
 
 			newState[currentListIndex] = currentList;
@@ -169,7 +180,7 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 
 			currentList.items[currentListItemIndex] = currentListItem;
 
-			let allNewTags = findAllNewTags(currentList.tags, listItemTags);
+			let allNewTags = findAllNewItems(currentList.tags, listItemTags);
 			currentList.tags.push(...allNewTags);
 
 			newState[currentListIndex] = currentList;

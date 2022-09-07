@@ -1,5 +1,3 @@
-import { ListTag } from "../types/types";
-
 /**
  * Returns the next id for a new *item*.
  * Mimics the id auto incrementing feature of a backend database.
@@ -30,15 +28,13 @@ export function findIndexOfItemById(collection: {id: number}[], id: number) {
 }
 
 /**
- * Returns an array of all new tags
- * --- new as in not currently in the set of all tags for a list ---
- * when adding or updating a list item.
+ * Returns an array of all new items in `collection` that are NOT in `referenceCollection`.
  */
-export function findAllNewTags(listTags: ListTag[], listItemTags: ListTag[]) {
-	let newTags = [];
+export function findAllNewItems<T>(referenceCollection: (T & {id: number})[], collection: (T & {id: number})[]) {
+	let newTags: T[] = [];
 
-	for (let tag of listItemTags) {
-		let index = findIndexOfItemById(listTags, tag.id);
+	for (let tag of collection) {
+		let index = findIndexOfItemById(referenceCollection, tag.id);
 
 		if (index == -1) {
 			newTags.push(tag);

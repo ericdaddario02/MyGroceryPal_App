@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { GestureResponderEvent } from 'react-native';
+import { GestureResponderEvent, Animated } from 'react-native';
 
 // === Types that are also used on the backend / Api Types ===
 
@@ -49,5 +49,17 @@ export interface StyledModalButton {
 }
 
 export type ValidListManagementModalType = 'create' | 'join' | 'edit' | 'invite' | 'delete' | null;
+
+export interface ListItemCardsAnimationValues {
+	[id: number]: {
+		defaultCardHeight: number,
+		cardHeight: Animated.Value,
+		cardBottomMargin: number|Animated.AnimatedInterpolation,
+		cardBulletHeight: number|Animated.AnimatedInterpolation,
+		cardBorderWidth: number|Animated.AnimatedInterpolation,
+		cardOpacity: number|Animated.AnimatedInterpolation,
+		visible: boolean, 
+	}
+}
 
 // ===

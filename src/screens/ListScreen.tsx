@@ -8,20 +8,7 @@ import { appColours, textColours } from '../constants/colours';
 import { appFonts } from '../constants/fonts';
 import { dropdownArrowIcon, plusIcon } from '../constants/images';
 
-import type { ListScreenProps, ListTag, ListItem } from '../types/types';
-
-
-interface ListItemCardsAnimationValues {
-	[id: number]: {
-		defaultCardHeight: number,
-		cardHeight: Animated.Value,
-		cardBottomMargin: number|Animated.AnimatedInterpolation,
-		cardBulletHeight: number|Animated.AnimatedInterpolation,
-		cardBorderWidth: number|Animated.AnimatedInterpolation,
-		cardOpacity: number|Animated.AnimatedInterpolation,
-		visible: boolean, 
-	}
-}
+import type { ListScreenProps, ListTag, ListItem, ListItemCardsAnimationValues } from '../types/types';
 
 
 function ListScreen({ navigation, route }: ListScreenProps) {
@@ -331,6 +318,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
                     setListItems,
                     setListTags
                 }}
+				listItemCardsAnimationValues={listItemCardsAnimationValues}
 			/>
 		</View>
 	);
