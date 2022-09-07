@@ -16,8 +16,9 @@ interface ListItemCardsAnimationValues {
 		defaultCardHeight: number,
 		cardHeight: Animated.Value,
 		cardBottomMargin: number|Animated.AnimatedInterpolation,
-		cardBulletOpacity: number|Animated.AnimatedInterpolation,
+		cardBulletHeight: number|Animated.AnimatedInterpolation,
 		cardBorderWidth: number|Animated.AnimatedInterpolation,
+		cardOpacity: number|Animated.AnimatedInterpolation,
 		visible: boolean, 
 	}
 }
@@ -48,8 +49,9 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				defaultCardHeight: 0,
 				cardHeight: new Animated.Value(0),
 				cardBottomMargin: vs(12),
-				cardBulletOpacity: 1,
+				cardBulletHeight: vs(3),
 				cardBorderWidth: 3,
+				cardOpacity: 1,
 				visible: true
 			};
 		}
@@ -131,7 +133,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				Animated.timing(animationValues.cardHeight, {
 					toValue: 0,
 					duration: 200,
-					easing: Easing.bezier(.71,.4,.88,.53),
+					easing: Easing.ease,
 					useNativeDriver: false
 				}).start(({ finished }) => {
 					if (finished && index == listItems.length - 1) {
@@ -144,7 +146,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				Animated.timing(animationValues.cardHeight, {
 					toValue: animationValues.defaultCardHeight,
 					duration: 200,
-					easing: Easing.bezier(.71,.4,.88,.53),
+					easing: Easing.ease,
 					useNativeDriver: false
 				}).start(({ finished }) => {
 					if (finished && index == listItems.length - 1) {
@@ -201,13 +203,17 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 				inputRange: [0, height],
 				outputRange: [0, vs(12)]
 			});
-			animationValues.cardBulletOpacity = animationValues.cardHeight.interpolate({
-				inputRange: [0, height],
-				outputRange: [0, 1]
+			animationValues.cardBulletHeight = animationValues.cardHeight.interpolate({
+				inputRange: [0, 10, height],
+				outputRange: [0, vs(3), vs(3)]
 			});
 			animationValues.cardBorderWidth = animationValues.cardHeight.interpolate({
 				inputRange: [0, 10, height],
 				outputRange: [0, 3, 3]
+			});
+			animationValues.cardOpacity = animationValues.cardHeight.interpolate({
+				inputRange: [0, height],
+				outputRange: [0, 1]
 			});
 		}
 	}
@@ -260,8 +266,8 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 			<ScrollView contentContainerStyle={[styles.allListItemsContainer, {paddingTop: activeFilters.every(flag => flag == false) ? vs(15) : vs(5)}]}>
 				{listItems.map((item, index) =>
-					<View key={item.id} style={styles.listItemCardRow}>
-						<Animated.View style={[styles.listItemCardLeftBullet, {opacity: listItemCardsAnimationValues[item.id].cardBulletOpacity}]}/>
+					<Animated.View key={item.id} style={[styles.listItemCardRow, {opacity: listItemCardsAnimationValues[item.id].cardOpacity}]}>
+						<Animated.View style={[styles.listItemCardLeftBullet, {height: listItemCardsAnimationValues[item.id].cardBulletHeight}]}/>
 
 						<Animated.View 
 							style={[styles.listItemCard, {
@@ -301,7 +307,7 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 								</TouchableOpacity>
 							</View>
 						</Animated.View>
-					</View>
+					</Animated.View>
 				)}
 			</ScrollView>
 
@@ -449,7 +455,6 @@ const styles = StyleSheet.create({
 	},
 	listItemCardLeftBullet: {
 		width: hs(13),
-		height: vs(3),
 		backgroundColor: appColours.grey,
 		borderRadius: 3,
 		marginRight: hs(10)
