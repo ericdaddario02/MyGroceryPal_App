@@ -118,10 +118,10 @@ export function ListItemCardModal({ isVisible, list, listItem, listTags, closeMo
 			listItemCardsAnimationValues[nextListItemId] = {
 				defaultCardHeight: 0,
 				cardHeight: new Animated.Value(0),
-				cardBottomMargin: vs(12),
+				cardBottomMargin: new Animated.Value(vs(12)),
 				cardBulletHeight: vs(3),
 				cardBorderWidth: 3,
-				cardOpacity: 1,
+				cardOpacity: new Animated.Value(1),
 				visible: true
 			};
 

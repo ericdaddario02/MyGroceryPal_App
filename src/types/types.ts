@@ -54,10 +54,10 @@ export interface ListItemCardsAnimationValues {
 	[id: number]: {
 		defaultCardHeight: number,
 		cardHeight: Animated.Value,
-		cardBottomMargin: number|Animated.AnimatedInterpolation,
+		cardBottomMargin: Animated.Value,
 		cardBulletHeight: number|Animated.AnimatedInterpolation,
 		cardBorderWidth: number|Animated.AnimatedInterpolation,
-		cardOpacity: number|Animated.AnimatedInterpolation,
+		cardOpacity: Animated.Value,
 		visible: boolean, 
 	}
 }

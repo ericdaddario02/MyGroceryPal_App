@@ -42,11 +42,6 @@ function App() {
 								<Text style={styles.headerTitleText}>My Lists</Text>
 							</View>
 						),
-						// headerTitle: () => (
-						// 	<View style={styles.headerTitleContainer}>
-						// 		<Text style={styles.headerTitleText}>My Lists</Text>
-						// 	</View>
-						// ),
 					}}
 				/>
 
@@ -63,17 +58,6 @@ function App() {
 								<Text adjustsFontSizeToFit style={styles.headerTitleText}>{route.params.list.name}</Text>
 							</View>
 						),
-						// headerTitle: () => (
-						// 	<View style={styles.headerTitleContainerMaxWidth}>
-						// 		<Text adjustsFontSizeToFit style={styles.headerTitleText}>{route.params.listName}</Text>
-						// 	</View>
-						// ),
-						// headerBackVisible: false,
-						// headerLeft: () => (
-						// 	<TouchableOpacity activeOpacity={0.4} onPress={() => navigation.goBack()} style={styles.headerLeftBackButtonTouchable}>
-						// 		<Image source={backIcon} resizeMode='contain' style={styles.headerLeftBackButtonIcon}/>
-						// 	</TouchableOpacity>
-						// ),
 					})}
 				/>
 
