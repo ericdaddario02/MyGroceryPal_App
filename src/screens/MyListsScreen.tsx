@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     },
     floatingButtonText: {
         fontFamily: appFonts.medium,
-        fontSize: 15,
+        fontSize: 16,
         color: textColours.blue
     }
 });

@@ -294,15 +294,23 @@ function ListScreen({ navigation, route }: ListScreenProps) {
 
 			<ScrollView contentContainerStyle={[styles.allListItemsContainer, {paddingTop: activeFilters.every(flag => flag == false) ? vs(15) : vs(5)}]}>
 				{listItems.map((item, index) =>
-					<Animated.View key={item.id} style={[styles.listItemCardRow, {opacity: listItemCardsAnimationValues[item.id].cardOpacity}]}>
+					<Animated.View
+						key={item.id}
+						style={[
+							styles.listItemCardRow,
+							{opacity: listItemCardsAnimationValues[item.id].cardOpacity, marginBottom: listItemCardsAnimationValues[item.id].cardBottomMargin}
+						]}
+					>
 						<Animated.View style={[styles.listItemCardLeftBullet, {height: listItemCardsAnimationValues[item.id].cardBulletHeight}]}/>
 
 						<Animated.View 
-							style={[styles.listItemCard, {
-								marginBottom: listItemCardsAnimationValues[item.id].cardBottomMargin,
-								height: listItemCardsAnimationValues[item.id].defaultCardHeight != 0 ? listItemCardsAnimationValues[item.id].cardHeight : undefined,
-								borderWidth: listItemCardsAnimationValues[item.id].cardBorderWidth
-							}]}
+							style={[
+								styles.listItemCard, 
+								{
+									height: listItemCardsAnimationValues[item.id].defaultCardHeight != 0 ? listItemCardsAnimationValues[item.id].cardHeight : undefined,
+									borderWidth: listItemCardsAnimationValues[item.id].cardBorderWidth
+								}
+							]}
 						>
 							<TouchableOpacity
 								activeOpacity={0.5}
@@ -599,7 +607,7 @@ const styles = StyleSheet.create({
     },
     floatingButtonText: {
         fontFamily: appFonts.medium,
-        fontSize: 15,
+        fontSize: 16,
         color: textColours.blue
     }
 });
