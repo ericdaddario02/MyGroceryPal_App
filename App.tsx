@@ -1,8 +1,9 @@
 import React from 'react';
-import { TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Image, StyleSheet, StatusBar } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { s as hs, vs } from 'react-native-size-matters';
+import RNBootSplash from 'react-native-bootsplash';
 
 import { ResponsiveText as Text } from './src/components/ResponsiveText';
 import { appFonts } from './src/constants/fonts';
@@ -30,7 +31,9 @@ const Stack = createNativeStackNavigator<StackParamList>();
 
 function App() {
 	return (
-		<NavigationContainer theme={navgiationContainerTheme}>
+		<NavigationContainer theme={navgiationContainerTheme} onReady={() => RNBootSplash.hide({ fade: true })}>
+			<StatusBar backgroundColor="white" barStyle="dark-content" />
+
 			<Stack.Navigator initialRouteName="MyLists">
 
 				<Stack.Screen 
