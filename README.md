@@ -16,20 +16,17 @@
 <div align="center">
   <img src="showcase/app_start.gif" height=600 />
 </div>
-<br/>
 
 #### Easily add new items to a list, with the ability to include optional info such as any additional notes, price, and whether or not the item is on sale. Furthermore, you can effortlessly categorize your list items by adding custom tags!
 
 <div align="center">
   <img src="showcase/adding_item.gif" height=600 />
 </div>
-<br/>
 
 #### Confidently find the items that you're looking for with the ability to filter your list items based on their tags!
 <div align="center">
   <img src="showcase/applying_filters.gif" height=600 />
 </div>
-<br/>
 
 ## Built With
 - <img src="https://reactnative.dev/img/header_logo.svg" alt="reactnative" width="20" height="20"/> React Native
